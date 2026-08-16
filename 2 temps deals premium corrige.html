@@ -344,7 +344,17 @@ const PIECES = [
   .deco-scooter.deco-left{left:30px}
   .deco-scooter.deco-right{right:30px}
   @media (max-width:900px){
-    .deco-scooter{display:none}
+    .deco-scooter{height:220px}
+    .deco-scooter.deco-left{left:-10px}
+    .deco-scooter.deco-right{right:-10px}
+  }
+  @media (max-width:600px){
+    .deco-scooter{height:150px;opacity:.28}
+    .deco-scooter.deco-left{left:-14px}
+    .deco-scooter.deco-right{right:-14px}
+  }
+  @media (max-width:380px){
+    .deco-scooter{height:110px}
   }
   .header-inner{position:relative;z-index:1;max-width:860px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
   .reseaux-header{
