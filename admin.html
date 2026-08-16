@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration — 2Temps Deals</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nuit:#081A30;
+    --marine:#0E2440;
+    --ciel:#7EC8F5;
+    --glacier:#BFE3FB;
+    --fond:#EDF3F9;
+    --papier:#FFFFFF;
+    --acier:#5A6E82;
+    --trait:#D5E2EE;
+    --rouge:#C33B2E;
+    --vert:#1F9D5B;
+    --orange:#D9822B;
+    --ombre:0 10px 30px rgba(8,26,48,.10);
+    --ombre-haute:0 18px 40px rgba(8,26,48,.20);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    font-variation-settings:'wdth' 94;
+    background:var(--fond);
+    color:var(--marine);
+    line-height:1.5;
+  }
+  .mono{font-family:'Space Mono',monospace}
+  button{font-family:inherit}
+  [hidden]{display:none !important}
+
+  /* ═══ ÉCRANS DE CONNEXION ═══ */
+  .ecran-connexion{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:
+      radial-gradient(620px 340px at 50% 8%, rgba(126,200,245,.22), transparent 70%),
+      linear-gradient(160deg, #0B2138 0%, var(--nuit) 55%, #060F1D 100%);
+  }
+  .carte-connexion{width:100%;max-width:380px;background:var(--papier);border-radius:18px;padding:34px 28px;box-shadow:var(--ombre-haute)}
+  .plaque-admin{
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--acier);text-align:center;margin-bottom:14px;
+  }
+  .carte-connexion h1{font-size:21px;font-weight:900;text-align:center;margin-bottom:6px;color:var(--marine);text-transform:uppercase;font-style:italic}
+  .carte-connexion p.sous{text-align:center;color:var(--acier);font-size:13px;margin-bottom:24px}
+  .champ{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .champ label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--acier)}
+  .champ input,.champ select,.champ textarea{
+    width:100%;padding:12px 14px;font:inherit;font-size:15px;
+    border:1.5px solid var(--trait);border-radius:10px;
+    background:#fff;color:var(--marine);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .champ input:focus,.champ select:focus,.champ textarea:focus{
+    outline:none;border-color:var(--ciel);box-shadow:0 0 0 4px rgba(126,200,245,.25);
+  }
+  .champ textarea{resize:vertical;min-height:78px}
+  .champ small{color:var(--acier);font-size:11.5px}
+  .btn-primaire{
+    width:100%;padding:14px;font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--nuit);background:linear-gradient(180deg,var(--glacier),var(--ciel));
+    border:none;border-radius:999px;cursor:pointer;
+    box-shadow:0 10px 26px rgba(126,200,245,.35);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primaire:hover{transform:translateY(-2px)}
+  .btn-primaire:disabled{opacity:.55;cursor:not-allowed;transform:none}
+  .message{
+    border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:16px;display:none;
+  }
+  .message.visible{display:block}
+  .message.erreur{background:#FCE9E7;color:var(--rouge);border:1px solid rgba(195,59,46,.3)}
+  .message.succes{background:#E7F6EE;color:var(--vert);border:1px solid rgba(31,157,91,.3)}
+  .lien-discret{
+    display:block;width:100%;text-align:center;margin-top:16px;font-size:12px;
+    color:var(--acier);text-decoration:underline;cursor:pointer;background:none;border:none;
+  }
+
+  /* ═══ TOPBAR ADMIN ═══ */
+  .topbar-admin{
+    background:linear-gradient(160deg,#0B2138 0%,var(--nuit) 55%,#060F1D 100%);
+    color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.25);
+  }
+  .titre-admin{display:flex;flex-direction:column;gap:2px}
+  .titre-admin .nom-site{font-size:16px;font-weight:800;font-style:italic;text-transform:uppercase}
+  .titre-admin .label-admin{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ciel)}
+  .btn-deconnexion{
+    padding:10px 18px;border-radius:999px;border:1.5px solid rgba(126,200,245,.4);
+    background:rgba(255,255,255,.06);color:var(--ciel);font-weight:700;font-size:12px;
+    text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:background .15s ease;
+  }
+  .btn-deconnexion:hover{background:rgba(126,200,245,.18)}
+
+  .conteneur-admin{max-width:1200px;margin:0 auto;padding:22px 16px 70px}
+
+  /* ═══ BARRE OUTILS ═══ */
+  .toolbar-admin{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+  .toolbar-admin input[type=search],.toolbar-admin select{
+    padding:11px 14px;font:inherit;font-size:13.5px;border:1.5px solid var(--trait);
+    border-radius:10px;background:#fff;color:var(--marine);
+  }
+  .toolbar-admin input[type=search]:focus,.toolbar-admin select:focus{outline:none;border-color:var(--ciel);box-shadow:0 0 0 3px rgba(126,200,245,.25)}
+  .toolbar-admin input[type=search]{flex:1 1 200px;min-width:150px}
+  .toolbar-admin select{flex:1 1 130px;max-width:180px}
+  .btn-ajouter{
+    padding:12px 22px;border:none;border-radius:999px;font-weight:800;font-size:13px;
+    text-transform:uppercase;letter-spacing:.04em;color:var(--nuit);
+    background:linear-gradient(180deg,var(--glacier),var(--ciel));cursor:pointer;
+    box-shadow:0 8px 20px rgba(126,200,245,.35);white-space:nowrap;
+  }
+  .resume-admin{font-size:12px;color:var(--acier);margin-bottom:14px;font-family:'Space Mono',monospace}
+
+  /* ═══ LISTE / TABLEAU ═══ */
+  .table-pieces{display:flex;flex-direction:column;gap:10px}
+  .entete-table{display:none}
+  .ligne-piece{
+    background:var(--papier);border:1px solid var(--trait);border-radius:14px;
+    padding:14px 16px;box-shadow:0 2px 10px rgba(8,26,48,.05);
+    display:flex;flex-direction:column;gap:9px;
+  }
+  .ligne-piece.inactif{opacity:.5}
+  .ligne-piece .cellule{display:flex;align-items:center;gap:8px;font-size:13.5px;min-width:0}
+  .ligne-piece .cellule > span, .ligne-piece .cellule > strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ligne-piece .cellule[data-label]::before{
+    content:attr(data-label);font-size:10px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--acier);font-weight:800;min-width:80px;flex-shrink:0;
+  }
+  @media (min-width:920px){
+    .entete-table{
+      display:grid;grid-template-columns:56px 1.5fr 1fr .9fr .9fr .6fr .6fr .9fr 1.6fr;
+      gap:10px;padding:0 16px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+      color:var(--acier);font-weight:800;
+    }
+    .ligne-piece{
+      display:grid;grid-template-columns:56px 1.5fr 1fr .9fr .9fr .6fr .6fr .9fr 1.6fr;
+      gap:10px;align-items:center;padding:9px 16px;
+    }
+    .ligne-piece .cellule[data-label]::before{content:none}
+  }
+  .miniature{width:46px;height:46px;border-radius:8px;object-fit:cover;background:var(--fond);flex-shrink:0}
+  .miniature-vide{
+    width:46px;height:46px;border-radius:8px;background:var(--fond);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:var(--acier);font-size:9px;text-align:center;
+  }
+  .badge-statut{padding:4px 10px;border-radius:999px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+  .badge-enstock{background:rgba(31,157,91,.14);color:var(--vert)}
+  .badge-reserve2{background:rgba(217,130,43,.16);color:var(--orange)}
+  .badge-vendu2{background:rgba(195,59,46,.14);color:var(--rouge)}
+  .badge-indispo{background:rgba(90,110,130,.16);color:var(--acier)}
+  .actions-piece{display:flex;gap:6px;flex-wrap:wrap}
+  .btn-action{
+    padding:7px 12px;border-radius:8px;border:1.5px solid var(--trait);background:#fff;
+    color:var(--marine);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .btn-action:hover{background:var(--fond);border-color:var(--ciel)}
+  .btn-action.danger{color:var(--rouge);border-color:rgba(195,59,46,.3)}
+  .btn-action.danger:hover{background:#FCE9E7}
+
+  .switch{position:relative;display:inline-block;width:38px;height:22px;flex-shrink:0}
+  .switch input{opacity:0;width:0;height:0;position:absolute}
+  .switch .glissiere{position:absolute;inset:0;background:#CBD8E4;border-radius:999px;transition:.2s;cursor:pointer}
+  .switch .glissiere::before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .switch input:checked + .glissiere{background:var(--vert)}
+  .switch input:checked + .glissiere::before{transform:translateX(16px)}
+
+  .vide-admin{text-align:center;padding:60px 20px;color:var(--acier)}
+  .vide-admin strong{display:block;font-size:16px;color:var(--marine);margin-bottom:6px}
+
+  /* ═══ MODALE FORMULAIRE ═══ */
+  .overlay-modal{
+    position:fixed;inset:0;background:rgba(6,15,29,.6);backdrop-filter:blur(3px);
+    display:flex;align-items:flex-end;justify-content:center;z-index:100;
+    opacity:0;pointer-events:none;transition:opacity .2s ease;
+  }
+  .overlay-modal.visible{opacity:1;pointer-events:auto}
+  .modal-form{
+    background:var(--fond);width:100%;max-width:740px;max-height:92vh;overflow-y:auto;
+    border-radius:20px 20px 0 0;padding:22px 18px 40px;position:relative;
+  }
+  @media (min-width:760px){
+    .overlay-modal{align-items:center;padding:20px}
+    .modal-form{border-radius:18px;padding:30px 34px 34px;max-height:88vh}
+  }
+  .modal-form h2{font-size:20px;font-weight:900;margin-bottom:20px;color:var(--marine);text-transform:uppercase;font-style:italic;padding-right:36px}
+  .btn-fermer-modal{
+    position:absolute;top:16px;right:16px;background:rgba(8,26,48,.08);border:none;
+    width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;color:var(--marine);
+  }
+  .section-form{margin-bottom:22px}
+  .section-form h3{
+    font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#3E7EA8;font-weight:800;
+    margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--trait);
+  }
+  .grille-champs{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:600px){
+    .grille-champs.deux{grid-template-columns:1fr 1fr}
+    .grille-champs.trois{grid-template-columns:1fr 1fr 1fr}
+  }
+  .champ-inline{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--marine);font-weight:600}
+  .champ-inline input[type=checkbox]{width:18px;height:18px;accent-color:var(--ciel)}
+
+  .zone-upload{
+    border:2px dashed var(--trait);border-radius:12px;padding:20px;text-align:center;
+    color:var(--acier);font-size:12.5px;cursor:pointer;transition:border-color .15s ease;
+  }
+  .zone-upload:hover{border-color:var(--ciel)}
+  .zone-upload strong{display:block;color:var(--marine);font-size:13.5px;margin-bottom:4px}
+  .grille-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:10px;margin-top:12px}
+  .photo-item{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1;background:var(--trait);border:2px solid transparent}
+  .photo-item.principale{border-color:var(--ciel);box-shadow:0 0 0 2px rgba(126,200,245,.35)}
+  .photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-item .etoile{
+    position:absolute;top:4px;left:4px;background:rgba(8,26,48,.72);color:#FFD166;
+    border:none;border-radius:6px;padding:3px 6px;font-size:12px;cursor:pointer;line-height:1;
+  }
+  .photo-item .suppr{
+    position:absolute;top:4px;right:4px;background:rgba(195,59,46,.88);color:#fff;
+    border:none;border-radius:6px;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;
+  }
+  .photo-item .deplacer{position:absolute;bottom:4px;left:4px;right:4px;display:flex;gap:3px;justify-content:center}
+  .photo-item .deplacer button{background:rgba(8,26,48,.72);color:#fff;border:none;border-radius:5px;width:22px;height:18px;font-size:10px;cursor:pointer}
+  .etiquette-principale{position:absolute;bottom:4px;left:4px;background:rgba(126,200,245,.92);color:var(--nuit);font-size:9px;font-weight:800;text-transform:uppercase;padding:2px 5px;border-radius:4px}
+
+  .pied-modal{display:flex;gap:10px;justify-content:flex-end;margin-top:26px;flex-wrap:wrap}
+  .btn-annuler{padding:12px 22px;border-radius:999px;border:1.5px solid var(--trait);background:#fff;color:var(--marine);font-weight:700;font-size:13px;cursor:pointer}
+  .btn-annuler:hover{background:var(--fond)}
+  .btn-enregistrer{
+    padding:12px 28px;border-radius:999px;border:none;
+    background:linear-gradient(180deg,var(--glacier),var(--ciel));color:var(--nuit);
+    font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;
+    box-shadow:0 8px 20px rgba(126,200,245,.35);
+  }
+
+  /* ═══ EXPORT ═══ */
+  .panneau-export{background:var(--marine);color:#fff;border-radius:16px;padding:22px;margin-top:30px}
+  .panneau-export h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;color:var(--ciel)}
+  .panneau-export p{font-size:13px;color:#C8DCEC;margin-bottom:16px;line-height:1.55}
+  .actions-export{display:flex;gap:10px;flex-wrap:wrap}
+  .btn-export{
+    padding:12px 20px;border-radius:999px;border:1.5px solid rgba(126,200,245,.4);
+    background:rgba(255,255,255,.08);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .btn-export.principal{background:linear-gradient(180deg,var(--glacier),var(--ciel));color:var(--nuit);border:none}
+  .btn-export:hover{background:rgba(255,255,255,.16)}
+  .btn-export.principal:hover{background:linear-gradient(180deg,var(--glacier),var(--ciel));opacity:.92}
+
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--marine);color:#fff;padding:13px 24px;border-radius:999px;font-size:13px;
+    font-weight:600;box-shadow:var(--ombre-haute);opacity:0;pointer-events:none;
+    transition:.25s ease;z-index:300;max-width:90vw;text-align:center;
+  }
+  .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ═══ ÉCRAN : CRÉATION DU COMPTE (1ère utilisation) ═══ -->
+<div id="ecran-creation" class="ecran-connexion" hidden>
+  <div class="carte-connexion">
+    <p class="plaque-admin">2Temps Deals · Admin</p>
+    <h1>Créer l'accès admin</h1>
+    <p class="sous">Premier lancement — choisissez votre identifiant et votre mot de passe. Ils resteront enregistrés uniquement sur cet appareil.</p>
+    <div id="message-creation" class="message erreur"></div>
+    <form id="form-creation">
+      <div class="champ">
+        <label for="creation-user">Nom d'utilisateur</label>
+        <input id="creation-user" type="text" autocomplete="username" required>
+      </div>
+      <div class="champ">
+        <label for="creation-pass">Mot de passe</label>
+        <input id="creation-pass" type="password" autocomplete="new-password" minlength="6" required>
+        <small>6 caractères minimum</small>
+      </div>
+      <div class="champ">
+        <label for="creation-pass2">Confirmer le mot de passe</label>
+        <input id="creation-pass2" type="password" autocomplete="new-password" required>
+      </div>
+      <button type="submit" class="btn-primaire">Créer mon accès</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ ÉCRAN : CONNEXION ═══ -->
+<div id="ecran-connexion" class="ecran-connexion" hidden>
+  <div class="carte-connexion">
+    <p class="plaque-admin">2Temps Deals · Admin</p>
+    <h1>Connexion</h1>
+    <p class="sous">Espace réservé à la gestion des articles.</p>
+    <div id="message-connexion" class="message erreur"></div>
+    <form id="form-connexion">
+      <div class="champ">
+        <label for="login-user">Nom d'utilisateur</label>
+        <input id="login-user" type="text" autocomplete="username" required>
+      </div>
+      <div class="champ">
+        <label for="login-pass">Mot de passe</label>
+        <input id="login-pass" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-primaire">Se connecter</button>
+    </form>
+    <button type="button" id="lien-reinit" class="lien-discret">Identifiants oubliés / réinitialiser l'accès</button>
+  </div>
+</div>
+
+<!-- ═══ ESPACE ADMIN ═══ -->
+<div id="ecran-admin" hidden>
+  <div class="topbar-admin">
+    <div class="titre-admin">
+      <span class="nom-site">2Temps Deals</span>
+      <span class="label-admin">Gestion des articles</span>
+    </div>
+    <button type="button" id="btn-deconnexion" class="btn-deconnexion">Se déconnecter</button>
+  </div>
+
+  <div class="conteneur-admin">
+    <div class="toolbar-admin">
+      <input type="search" id="recherche-admin" placeholder="Rechercher par nom ou référence…">
+      <select id="filtre-categorie"><option value="Toutes">Toutes catégories</option></select>
+      <select id="filtre-etat"><option value="Tous">Tous états</option></select>
+      <select id="filtre-dispo">
+        <option value="Toutes">Toutes disponibilités</option>
+        <option value="En stock">En stock</option>
+        <option value="Réservé">Réservé</option>
+        <option value="Vendu">Vendu</option>
+        <option value="Indisponible">Indisponible</option>
+      </select>
+      <select id="tri-admin">
+        <option value="date-desc">Ajout : récent → ancien</option>
+        <option value="date-asc">Ajout : ancien → récent</option>
+        <option value="prix-asc">Prix croissant</option>
+        <option value="prix-desc">Prix décroissant</option>
+      </select>
+      <button type="button" id="btn-ajouter" class="btn-ajouter">+ Ajouter un article</button>
+    </div>
+
+    <p class="resume-admin" id="resume-admin"></p>
+
+    <div class="entete-table">
+      <div>Photo</div><div>Nom</div><div>Référence</div><div>Catégorie</div>
+      <div>État</div><div>Prix</div><div>Stock</div><div>Statut</div><div>Actions</div>
+    </div>
+    <div class="table-pieces" id="table-pieces"></div>
+    <div class="vide-admin" id="vide-admin" hidden>
+      <strong>Aucun article ne correspond</strong>
+      Modifiez votre recherche ou vos filtres.
+    </div>
+
+    <div class="panneau-export">
+      <h3>Publier les modifications</h3>
+      <p>
+        Les articles sont enregistrés sur cet appareil. Pour qu'ils apparaissent sur le vrai site,
+        exportez le fichier mis à jour et envoyez-le (ou collez le texte copié) à Claude pour le publier.
+      </p>
+      <div class="actions-export">
+        <button type="button" id="btn-telecharger" class="btn-export principal">Télécharger le fichier à jour</button>
+        <button type="button" id="btn-copier" class="btn-export">Copier le texte</button>
+        <button type="button" id="btn-voir-site" class="btn-export">Voir le site public</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODALE AJOUT / MODIFICATION ═══ -->
+<div class="overlay-modal" id="overlay-modal">
+  <div class="modal-form">
+    <button type="button" class="btn-fermer-modal" id="btn-fermer-modal" aria-label="Fermer">✕</button>
+    <h2 id="titre-modal">Ajouter un article</h2>
+    <form id="form-article">
+      <div class="section-form">
+        <h3>Informations principales</h3>
+        <div class="grille-champs deux">
+          <div class="champ">
+            <label for="f-nom">Nom de l'article *</label>
+            <input id="f-nom" type="text" required>
+          </div>
+          <div class="champ">
+            <label for="f-ref">Référence</label>
+            <input id="f-ref" type="text">
+          </div>
+        </div>
+        <div class="grille-champs deux">
+          <div class="champ">
+            <label for="f-categorie">Catégorie</label>
+            <input id="f-categorie" type="text" list="liste-categories" placeholder="Ex. Moteur">
+            <datalist id="liste-categories"></datalist>
+          </div>
+          <div class="champ">
+            <label for="f-modele">Modèle / compatibilité scooter</label>
+            <input id="f-modele" type="text" list="liste-modeles" placeholder="Ex. MBK Booster">
+            <datalist id="liste-modeles"></datalist>
+          </div>
+        </div>
+        <div class="champ">
+          <label for="f-compatible">Compatibilité (détail affiché sur la fiche)</label>
+          <input id="f-compatible" type="text" placeholder="Ex. Booster 2004+">
+        </div>
+        <div class="grille-champs trois">
+          <div class="champ">
+            <label for="f-prix">Prix (€) *</label>
+            <input id="f-prix" type="number" step="0.01" min="0" required>
+          </div>
+          <div class="champ">
+            <label for="f-ancien-prix">Ancien prix si promo (€)</label>
+            <input id="f-ancien-prix" type="number" step="0.01" min="0">
+          </div>
+          <div class="champ">
+            <label for="f-stock">Stock disponible</label>
+            <input id="f-stock" type="number" step="1" min="0" value="1">
+          </div>
+        </div>
+        <div class="champ">
+          <label for="f-etat">État de la pièce</label>
+          <input id="f-etat" type="text" list="liste-etats" placeholder="Ex. Occasion">
+          <datalist id="liste-etats"></datalist>
+          <small>Tapez pour créer un nouvel état si besoin — il sera proposé ensuite.</small>
+        </div>
+        <div class="champ">
+          <label for="f-description">Description</label>
+          <textarea id="f-description" placeholder="Détails visibles par les acheteurs"></textarea>
+        </div>
+        <div class="champ">
+          <label for="f-infos">Informations complémentaires</label>
+          <textarea id="f-infos" placeholder="Notes internes ou précisions additionnelles"></textarea>
+        </div>
+      </div>
+
+      <div class="section-form">
+        <h3>Disponibilité</h3>
+        <div class="grille-champs deux">
+          <div class="champ">
+            <label for="f-disponibilite">Statut</label>
+            <select id="f-disponibilite">
+              <option value="En stock">En stock</option>
+              <option value="Réservé">Réservé</option>
+              <option value="Vendu">Vendu</option>
+              <option value="Indisponible">Indisponible</option>
+            </select>
+          </div>
+          <div class="champ" id="champ-afficher-vendu">
+            <label>Affichage si vendu</label>
+            <label class="champ-inline">
+              <input type="checkbox" id="f-afficher-vendu" checked>
+              Afficher « VENDU » sur la fiche (sinon la fiche est masquée du site)
+            </label>
+          </div>
+        </div>
+        <label class="champ-inline">
+          <input type="checkbox" id="f-actif" checked>
+          Article actif (visible sur le site public)
+        </label>
+      </div>
+
+      <div class="section-form">
+        <h3>Photos</h3>
+        <label class="zone-upload" for="f-photos">
+          <strong>Ajouter des photos</strong>
+          Cliquez pour choisir une ou plusieurs images
+        </label>
+        <input id="f-photos" type="file" accept="image/*" multiple hidden>
+        <div class="grille-photos" id="grille-photos"></div>
+      </div>
+
+      <div class="pied-modal">
+        <button type="button" class="btn-annuler" id="btn-annuler-form">Annuler</button>
+        <button type="submit" class="btn-enregistrer">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DONNÉES — clés de stockage local (propres à cet appareil)
+   ═══════════════════════════════════════════════════════════ */
+const CLE_AUTH = "admin2td_auth_v1";
+const CLE_PIECES = "admin2td_pieces_v1";
+const CLE_SESSION = "admin2td_session_v1";
+
+const ETATS_PAR_DEFAUT = ["Neuf","Comme neuf","Très bon état","Bon état","État correct","Occasion","À restaurer"];
+
+/* Copie de départ du catalogue actuel du site (utilisée une seule fois,
+   au tout premier lancement, pour pré-remplir l'admin). */
+const PIECES_INITIALES = [
+  { ref:"ROU-001", nom:"vario", categorie:"variation", modele:"Yamaha Nitro/booster", etat:"Occasion", prix:30, compatible:"Nitro / Aerox/booster", photo:"https://i.postimg.cc/zvhzcNcV/B6B53B11-E55B-455B-8BB3-8D84C16FA588.png", vendu:true },
+  { ref:"", nom:"embrayage", categorie:"variation", modele:"MBK Booster", etat:"Occasion", prix:50, compatible:"Booster 2004+", photo:"", vendu:false },
+  { ref:"", nom:"boite a clapet", categorie:"variation", modele:"MBK Booster", etat:"Occasion", prix:10, compatible:"Booster 2004+", photo:"https://i.postimg.cc/L4T0jLW1/4396FF43-0F8C-4CA1-8896-AF7291C0C926.png", vendu:false },
+  { ref:"", nom:"transmission", categorie:"moteur", modele:"MBK Booster", etat:"Occasion", prix:40, compatible:"MBK Booster", photo:"https://i.postimg.cc/kMxTqK9d/9E778C9E-DD18-4E16-BE45-40E63313A230.png", vendu:false },
+  { ref:"SCO-001", nom:"MBK Nitro", categorie:"Scooter complet", modele:"MBK Booster", etat:"Prêt à rouler", prix:1500, compatible:"Démarre au quart de tour, pneus récents, papiers en ordre", photo:"https://i.postimg.cc/02gHrLvP/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg", vendu:true },
+  { ref:"SCO-003", nom:"MBK Booster Spirit 2012", categorie:"Scooter complet", modele:"MBK Booster", etat:"Prêt à rouler", prix:2000, compatible:"Démarre au quart de tour, pneus récents, papiers en ordre", photo:"https://i.postimg.cc/xdrrQcdQ/att-SBz-CSf7Sc-Xtkk-KZMo-Dq-EQ-v-6g-JI5H3YTu5u-Tn-Utc-Y.jpg", vendu:false },
+  { ref:"SCO-004", nom:"MBK Booster Spirit 2006", categorie:"Scooter complet", modele:"MBK Booster", etat:"Prêt à rouler", prix:1500, compatible:"Démarre au quart de tour, pneus récents, papiers en ordre", photo:"https://i.postimg.cc/RZwLJ8Xg/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg", vendu:true },
+  { ref:"SCO-002", nom:"Honda Wallaroo", categorie:"Scooter complet", modele:"Yamaha Nitro", etat:"À réparer", prix:700, compatible:"Moteur tourne, carbu à nettoyer, frein avant à revoir", photo:"https://i.postimg.cc/ryHrqk5P/att-IFQKl87-RBHi-X1mm5b4Exv2Nxj-HZGtt-TEAt-QDOj6DSQ.jpg", vendu:false },
+  { ref:"5BR-F4710-00", nom:"Selle Nitro", categorie:"Carrosserie", modele:"Yamaha Nitro", etat:"Occasion", prix:35, compatible:"Nitro / Aerox", photo:"https://i.postimg.cc/d3pH9CMY/att-s-XUTVussl-Lh-Oqw9u-2la-WCs-Phe-V53gz-CP0UNPOT8Cw.jpg", vendu:false },
+  { ref:"5BR-F4730-00", nom:"Selle Booster", categorie:"Carrosserie", modele:"MBK Booster", etat:"Occasion", prix:40, compatible:"Booster 2004+", photo:"https://i.postimg.cc/zBnKQRR3/att-k-Mz0xz6cgghd-OIVayjx-Dodbx-TB5MHMVyl-Ase-Ks8YOE.jpg", vendu:false },
+  { ref:"CAR-001", nom:"Compteur", categorie:"Carrosserie", modele:"Yamaha Nitro", etat:"Occasion", prix:80, compatible:"Yamaha Nitro", photo:"https://i.postimg.cc/8PY3hZqb/1D38D209-F2A1-4338-9F69-F4529A89F8BA.jpg", vendu:false },
+  { ref:"", nom:"cable frein", categorie:"cablage", modele:"MBK Booster", etat:"neuf", prix:10, compatible:"Booster", photo:"https://i.postimg.cc/L8n4ZzHf/IMG-1205.jpg", vendu:false },
+  { ref:"TRA-001", nom:"Carbu 21 Motorforce", categorie:"Moteur", modele:"Universel", etat:"Occasion", prix:50, compatible:"Universel", photo:"https://i.postimg.cc/J4b4SVxz/att-RRLf8Jzdq1dl-RM-Cl4oz30x-Y3Gusrj-W3Bp-Zlgb-Mp93A.jpg", vendu:false },
+  { ref:"ELE-001", nom:"Faisceau électrique complet", categorie:"cablage", modele:"MBK Booster", etat:"Occasion", prix:50, compatible:"Booster", photo:"https://i.postimg.cc/1zCPGWz0/att-KOb6b2tp-D6Fn-Y6mq2JRx-Iw3Ettc-UJWFKj-MDQhhdlaao.jpg", vendu:false },
+  { ref:"FIC-001", nom:"Pot d'échappement sport", categorie:"Moteur", modele:"MBK Booster", etat:"Occasion", prix:60, compatible:"Booster / Stunt", photo:"", vendu:false },
+  { ref:"FIC-002", nom:"Pneu arrière 130/70-13", categorie:"Roues & Pneus", modele:"Yamaha Nitro", etat:"Neuf", prix:45, compatible:"Nitro / Aerox", photo:"", vendu:false },
+  { ref:"FIC-003", nom:"Kit plastiques carénage complet", categorie:"Carrosserie", modele:"MBK Booster", etat:"Occasion", prix:120, compatible:"Booster 2004+", photo:"", vendu:false },
+  { ref:"FIC-004", nom:"Disque de frein avant", categorie:"Freinage", modele:"Yamaha Nitro", etat:"Neuf", prix:25, compatible:"Nitro / Aerox", photo:"", vendu:false },
+  { ref:"FIC-005", nom:"Rétroviseurs paire", categorie:"Accessoires", modele:"Universel", etat:"Neuf", prix:15, compatible:"Universel", photo:"", vendu:false },
+  { ref:"FIC-006", nom:"Bougie d'allumage", categorie:"Moteur", modele:"Universel", etat:"Neuf", prix:5, compatible:"Universel 2 temps", photo:"", vendu:false },
+  { ref:"FIC-007", nom:"Clignotants avant/arrière", categorie:"Électrique", modele:"MBK Booster", etat:"Occasion", prix:20, compatible:"Booster 2004+", photo:"", vendu:false },
+  { ref:"FIC-008", nom:"Béquille centrale", categorie:"Accessoires", modele:"Peugeot Ludix", etat:"Occasion", prix:18, compatible:"Ludix", photo:"", vendu:false },
+  { ref:"FIC-009", nom:"Poignée de gaz + câble", categorie:"cablage", modele:"Yamaha Nitro", etat:"Neuf", prix:12, compatible:"Nitro / Aerox", photo:"", vendu:false },
+  { ref:"FIC-010", nom:"Filtre à air sport", categorie:"Moteur", modele:"MBK Booster", etat:"Neuf", prix:22, compatible:"Booster / Stunt", photo:"", vendu:false }
+];
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function uid(){
+  return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+}
+
+async function sha256(texte){
+  const donnees = new TextEncoder().encode(texte);
+  const hachage = await crypto.subtle.digest("SHA-256", donnees);
+  return Array.from(new Uint8Array(hachage)).map(o => o.toString(16).padStart(2,"0")).join("");
+}
+
+function migrerPiece(p){
+  const maintenant = new Date().toISOString();
+  return {
+    id: uid(),
+    ref: p.ref || "",
+    nom: p.nom || "",
+    categorie: p.categorie || "",
+    modele: p.modele || "",
+    compatible: p.compatible || "",
+    etat: p.etat || "Occasion",
+    prix: Number(p.prix) || 0,
+    ancienPrix: p.ancienPrix || null,
+    stock: (p.stock !== undefined) ? p.stock : 1,
+    description: p.description || "",
+    infos: p.infos || "",
+    disponibilite: p.disponibilite || (p.vendu ? "Vendu" : "En stock"),
+    afficherVendu: (p.afficherVendu !== undefined) ? p.afficherVendu : true,
+    actif: (p.actif !== undefined) ? p.actif : true,
+    photos: p.photos ? p.photos.slice() : (p.photo ? [p.photo] : []),
+    dateCreation: p.dateCreation || maintenant,
+    dateModification: p.dateModification || maintenant
+  };
+}
+
+function chargerPieces(){
+  const brut = localStorage.getItem(CLE_PIECES);
+  if (brut){
+    try { return JSON.parse(brut); } catch(e){ /* ignore, on repart des données initiales */ }
+  }
+  const migrees = PIECES_INITIALES.map(migrerPiece);
+  sauvegarderPieces(migrees);
+  return migrees;
+}
+function sauvegarderPieces(liste){
+  localStorage.setItem(CLE_PIECES, JSON.stringify(liste));
+}
+
+let pieces = chargerPieces();
+
+/* ═══════════════════════════════════════════════════════════
+   AUTHENTIFICATION
+   ═══════════════════════════════════════════════════════════ */
+function getAuth(){
+  const brut = localStorage.getItem(CLE_AUTH);
+  return brut ? JSON.parse(brut) : null;
+}
+
+function afficherEcran(id){
+  ["ecran-creation","ecran-connexion","ecran-admin"].forEach(autre => {
+    $("#" + autre).hidden = (autre !== id);
+  });
+}
+
+function demarrer(){
+  const auth = getAuth();
+  if (!auth){
+    afficherEcran("ecran-creation");
+  } else if (sessionStorage.getItem(CLE_SESSION)){
+    afficherEcran("ecran-admin");
+    initTableauBord();
+  } else {
+    afficherEcran("ecran-connexion");
+  }
+}
+
+$("#form-creation").addEventListener("submit", async e => {
+  e.preventDefault();
+  const nomUtilisateur = $("#creation-user").value.trim();
+  const pass = $("#creation-pass").value;
+  const pass2 = $("#creation-pass2").value;
+  const msg = $("#message-creation");
+  msg.classList.remove("visible");
+  if (!nomUtilisateur || pass.length < 6){
+    msg.textContent = "Identifiant requis et mot de passe de 6 caractères minimum.";
+    msg.classList.add("visible");
+    return;
+  }
+  if (pass !== pass2){
+    msg.textContent = "Les deux mots de passe ne correspondent pas.";
+    msg.classList.add("visible");
+    return;
+  }
+  const hachage = await sha256(pass);
+  localStorage.setItem(CLE_AUTH, JSON.stringify({ utilisateur: nomUtilisateur, hachage }));
+  sessionStorage.setItem(CLE_SESSION, "1");
+  afficherEcran("ecran-admin");
+  initTableauBord();
+});
+
+$("#form-connexion").addEventListener("submit", async e => {
+  e.preventDefault();
+  const nomUtilisateur = $("#login-user").value.trim();
+  const pass = $("#login-pass").value;
+  const msg = $("#message-connexion");
+  const auth = getAuth();
+  const hachage = await sha256(pass);
+  if (auth && nomUtilisateur === auth.utilisateur && hachage === auth.hachage){
+    msg.classList.remove("visible");
+    sessionStorage.setItem(CLE_SESSION, "1");
+    afficherEcran("ecran-admin");
+    initTableauBord();
+  } else {
+    msg.textContent = "Identifiant ou mot de passe incorrect.";
+    msg.classList.add("visible");
+  }
+});
+
+$("#btn-deconnexion").addEventListener("click", () => {
+  sessionStorage.removeItem(CLE_SESSION);
+  afficherEcran("ecran-connexion");
+  $("#login-user").value = "";
+  $("#login-pass").value = "";
+});
+
+$("#lien-reinit").addEventListener("click", () => {
+  const ok = confirm("Réinitialiser l'accès admin ? Vous devrez recréer un identifiant et un mot de passe. Les articles enregistrés ne seront pas supprimés.");
+  if (ok){
+    localStorage.removeItem(CLE_AUTH);
+    sessionStorage.removeItem(CLE_SESSION);
+    afficherEcran("ecran-creation");
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   TABLEAU DE BORD
+   ═══════════════════════════════════════════════════════════ */
+let filtres = { recherche:"", categorie:"Toutes", etat:"Tous", disponibilite:"Toutes", tri:"date-desc" };
+let dejaInitialise = false;
+
+function normaliser(t){
+  return (t || "").toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+}
+
+function categoriesUtilisees(){
+  return [...new Set(pieces.map(p => p.categorie).filter(Boolean))].sort();
+}
+function etatsUtilises(){
+  const set = new Set([...ETATS_PAR_DEFAUT, ...pieces.map(p => p.etat).filter(Boolean)]);
+  return [...set];
+}
+function modelesUtilises(){
+  return [...new Set(pieces.map(p => p.modele).filter(Boolean))].sort();
+}
+
+function remplirListesDeroulantes(){
+  const selCat = $("#filtre-categorie");
+  const valCat = selCat.value;
+  selCat.innerHTML = '<option value="Toutes">Toutes catégories</option>' +
+    categoriesUtilisees().map(c => `<option value="${c}">${c}</option>`).join("");
+  selCat.value = valCat && [...selCat.options].some(o => o.value === valCat) ? valCat : "Toutes";
+
+  const selEtat = $("#filtre-etat");
+  const valEtat = selEtat.value;
+  selEtat.innerHTML = '<option value="Tous">Tous états</option>' +
+    etatsUtilises().map(e => `<option value="${e}">${e}</option>`).join("");
+  selEtat.value = valEtat && [...selEtat.options].some(o => o.value === valEtat) ? valEtat : "Tous";
+
+  $("#liste-categories").innerHTML = categoriesUtilisees().map(c => `<option value="${c}">`).join("");
+  $("#liste-etats").innerHTML = etatsUtilises().map(e => `<option value="${e}">`).join("");
+  $("#liste-modeles").innerHTML = modelesUtilises().map(m => `<option value="${m}">`).join("");
+}
+
+function classeStatut(dispo){
+  if (dispo === "En stock") return "badge-enstock";
+  if (dispo === "Réservé") return "badge-reserve2";
+  if (dispo === "Vendu") return "badge-vendu2";
+  return "badge-indispo";
+}
+
+function pieceFiltrees(){
+  const q = normaliser(filtres.recherche.trim());
+  let liste = pieces.filter(p => {
+    const okTexte = !q || normaliser(p.nom + " " + p.ref).includes(q);
+    const okCat = filtres.categorie === "Toutes" || p.categorie === filtres.categorie;
+    const okEtat = filtres.etat === "Tous" || p.etat === filtres.etat;
+    const okDispo = filtres.disponibilite === "Toutes" || p.disponibilite === filtres.disponibilite;
+    return okTexte && okCat && okEtat && okDispo;
+  });
+  liste = liste.slice().sort((a,b) => {
+    if (filtres.tri === "prix-asc") return a.prix - b.prix;
+    if (filtres.tri === "prix-desc") return b.prix - a.prix;
+    if (filtres.tri === "date-asc") return new Date(a.dateCreation) - new Date(b.dateCreation);
+    return new Date(b.dateCreation) - new Date(a.dateCreation);
+  });
+  return liste;
+}
+
+function rendreTableau(){
+  remplirListesDeroulantes();
+  const zone = $("#table-pieces");
+  const liste = pieceFiltrees();
+  zone.innerHTML = "";
+  $("#vide-admin").hidden = liste.length > 0;
+
+  const total = pieces.length;
+  const actifs = pieces.filter(p => p.actif !== false).length;
+  $("#resume-admin").textContent = `${liste.length} article${liste.length>1?"s":""} affiché${liste.length>1?"s":""} sur ${total} au total · ${actifs} actif${actifs>1?"s":""}`;
+
+  liste.forEach(p => {
+    const ligne = document.createElement("div");
+    ligne.className = "ligne-piece" + (p.actif === false ? " inactif" : "");
+    const photoPrincipale = (p.photos && p.photos[0]) || "";
+    const miniature = photoPrincipale
+      ? `<img class="miniature" src="${photoPrincipale}" alt="">`
+      : `<div class="miniature-vide">Sans photo</div>`;
+    ligne.innerHTML = `
+      <div class="cellule">${miniature}</div>
+      <div class="cellule" data-label="Nom"><strong>${p.nom}</strong></div>
+      <div class="cellule" data-label="Référence"><span>${p.ref || "—"}</span></div>
+      <div class="cellule" data-label="Catégorie"><span>${p.categorie || "—"}</span></div>
+      <div class="cellule" data-label="État"><span>${p.etat || "—"}</span></div>
+      <div class="cellule" data-label="Prix"><span class="mono">${p.prix} €</span></div>
+      <div class="cellule" data-label="Stock"><span>${p.stock}</span></div>
+      <div class="cellule" data-label="Statut">
+        <span class="badge-statut ${classeStatut(p.disponibilite)}">${p.disponibilite}</span>
+      </div>
+      <div class="cellule" data-label="Actions">
+        <div class="actions-piece">
+          <button type="button" class="btn-action" data-action="modifier">Modifier</button>
+          <button type="button" class="btn-action" data-action="dupliquer">Dupliquer</button>
+          <label class="switch" title="Actif sur le site">
+            <input type="checkbox" data-action="toggle-actif" ${p.actif !== false ? "checked" : ""}>
+            <span class="glissiere"></span>
+          </label>
+          <button type="button" class="btn-action danger" data-action="supprimer">Supprimer</button>
+        </div>
+      </div>
+    `;
+    ligne.querySelector('[data-action="modifier"]').addEventListener("click", () => ouvrirFormulaire(p.id));
+    ligne.querySelector('[data-action="dupliquer"]').addEventListener("click", () => dupliquerPiece(p.id));
+    ligne.querySelector('[data-action="supprimer"]').addEventListener("click", () => supprimerPiece(p.id));
+    ligne.querySelector('[data-action="toggle-actif"]').addEventListener("change", e => {
+      p.actif = e.target.checked;
+      p.dateModification = new Date().toISOString();
+      sauvegarderPieces(pieces);
+      rendreTableau();
+    });
+    zone.appendChild(ligne);
+  });
+}
+
+function dupliquerPiece(id){
+  const original = pieces.find(p => p.id === id);
+  if (!original) return;
+  const maintenant = new Date().toISOString();
+  const copie = JSON.parse(JSON.stringify(original));
+  copie.id = uid();
+  copie.nom = original.nom + " (copie)";
+  copie.ref = original.ref ? original.ref + "-COPIE" : "";
+  copie.dateCreation = maintenant;
+  copie.dateModification = maintenant;
+  pieces.unshift(copie);
+  sauvegarderPieces(pieces);
+  rendreTableau();
+  afficherToast("Article dupliqué.");
+}
+
+function supprimerPiece(id){
+  const p = pieces.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`Supprimer « ${p.nom} » ? Cette action est irréversible.`)) return;
+  pieces = pieces.filter(x => x.id !== id);
+  sauvegarderPieces(pieces);
+  rendreTableau();
+  afficherToast("Article supprimé.");
+}
+
+$("#recherche-admin").addEventListener("input", e => { filtres.recherche = e.target.value; rendreTableau(); });
+$("#filtre-categorie").addEventListener("change", e => { filtres.categorie = e.target.value; rendreTableau(); });
+$("#filtre-etat").addEventListener("change", e => { filtres.etat = e.target.value; rendreTableau(); });
+$("#filtre-dispo").addEventListener("change", e => { filtres.disponibilite = e.target.value; rendreTableau(); });
+$("#tri-admin").addEventListener("change", e => { filtres.tri = e.target.value; rendreTableau(); });
+
+/* ═══════════════════════════════════════════════════════════
+   FORMULAIRE AJOUT / MODIFICATION
+   ═══════════════════════════════════════════════════════════ */
+let pieceEnEdition = null; // id de la pièce, ou null si nouvel article
+let photosEnCours = [];    // tableau de data-URLs pendant l'édition
+
+function ouvrirFormulaire(id){
+  remplirListesDeroulantes();
+  pieceEnEdition = id || null;
+  const p = id ? pieces.find(x => x.id === id) : null;
+
+  $("#titre-modal").textContent = p ? "Modifier l'article" : "Ajouter un article";
+  $("#f-nom").value = p ? p.nom : "";
+  $("#f-ref").value = p ? p.ref : "";
+  $("#f-categorie").value = p ? p.categorie : "";
+  $("#f-modele").value = p ? p.modele : "";
+  $("#f-compatible").value = p ? p.compatible : "";
+  $("#f-prix").value = p ? p.prix : "";
+  $("#f-ancien-prix").value = p && p.ancienPrix ? p.ancienPrix : "";
+  $("#f-stock").value = p ? p.stock : 1;
+  $("#f-etat").value = p ? p.etat : "Occasion";
+  $("#f-description").value = p ? p.description : "";
+  $("#f-infos").value = p ? p.infos : "";
+  $("#f-disponibilite").value = p ? p.disponibilite : "En stock";
+  $("#f-afficher-vendu").checked = p ? p.afficherVendu !== false : true;
+  $("#f-actif").checked = p ? p.actif !== false : true;
+
+  photosEnCours = p && p.photos ? p.photos.slice() : [];
+  rendreGrillePhotos();
+  basculerChampAfficherVendu();
+
+  $("#overlay-modal").classList.add("visible");
+}
+
+function fermerFormulaire(){
+  $("#overlay-modal").classList.remove("visible");
+  pieceEnEdition = null;
+  photosEnCours = [];
+}
+
+$("#btn-ajouter").addEventListener("click", () => ouvrirFormulaire(null));
+$("#btn-fermer-modal").addEventListener("click", fermerFormulaire);
+$("#btn-annuler-form").addEventListener("click", fermerFormulaire);
+$("#overlay-modal").addEventListener("click", e => { if (e.target.id === "overlay-modal") fermerFormulaire(); });
+
+$("#f-disponibilite").addEventListener("change", basculerChampAfficherVendu);
+function basculerChampAfficherVendu(){
+  $("#champ-afficher-vendu").style.display = $("#f-disponibilite").value === "Vendu" ? "" : "none";
+}
+
+/* ── Photos : ajout, redimensionnement, réordonnancement ── */
+function redimensionnerImage(fichier, dimensionMax = 900, qualite = 0.82){
+  return new Promise((resolve, reject) => {
+    const lecteur = new FileReader();
+    lecteur.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > dimensionMax){ height = Math.round(height * dimensionMax / width); width = dimensionMax; }
+        else if (height > dimensionMax){ width = Math.round(width * dimensionMax / height); height = dimensionMax; }
+        const toile = document.createElement("canvas");
+        toile.width = width; toile.height = height;
+        toile.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(toile.toDataURL("image/jpeg", qualite));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    lecteur.onerror = reject;
+    lecteur.readAsDataURL(fichier);
+  });
+}
+
+$("#f-photos").addEventListener("change", async e => {
+  const fichiers = Array.from(e.target.files || []);
+  for (const fichier of fichiers){
+    try {
+      const dataUrl = await redimensionnerImage(fichier);
+      photosEnCours.push(dataUrl);
+    } catch(err){ console.error("Erreur photo", err); }
+  }
+  e.target.value = "";
+  rendreGrillePhotos();
+});
+
+function rendreGrillePhotos(){
+  const zone = $("#grille-photos");
+  zone.innerHTML = "";
+  photosEnCours.forEach((src, i) => {
+    const item = document.createElement("div");
+    item.className = "photo-item" + (i === 0 ? " principale" : "");
+    item.innerHTML = `
+      <img src="${src}" alt="">
+      ${i === 0 ? '<span class="etiquette-principale">Principale</span>' : `<button type="button" class="etoile" title="Définir comme principale">★</button>`}
+      <button type="button" class="suppr" title="Supprimer">✕</button>
+      <div class="deplacer">
+        ${i > 0 ? '<button type="button" data-dir="-1">◀</button>' : ""}
+        ${i < photosEnCours.length - 1 ? '<button type="button" data-dir="1">▶</button>' : ""}
+      </div>
+    `;
+    const btnEtoile = item.querySelector(".etoile");
+    if (btnEtoile) btnEtoile.addEventListener("click", () => {
+      const [choisie] = photosEnCours.splice(i, 1);
+      photosEnCours.unshift(choisie);
+      rendreGrillePhotos();
+    });
+    item.querySelector(".suppr").addEventListener("click", () => {
+      photosEnCours.splice(i, 1);
+      rendreGrillePhotos();
+    });
+    item.querySelectorAll(".deplacer button").forEach(b => {
+      b.addEventListener("click", () => {
+        const dir = Number(b.dataset.dir);
+        const cible = i + dir;
+        if (cible < 0 || cible >= photosEnCours.length) return;
+        [photosEnCours[i], photosEnCours[cible]] = [photosEnCours[cible], photosEnCours[i]];
+        rendreGrillePhotos();
+      });
+    });
+    zone.appendChild(item);
+  });
+}
+
+/* ── Enregistrement du formulaire ── */
+$("#form-article").addEventListener("submit", e => {
+  e.preventDefault();
+  const maintenant = new Date().toISOString();
+  const nom = $("#f-nom").value.trim();
+  const prix = parseFloat($("#f-prix").value);
+  if (!nom || isNaN(prix) || prix < 0){
+    afficherToast("Nom et prix valides requis.");
+    return;
+  }
+  const ancienPrixVal = $("#f-ancien-prix").value ? parseFloat($("#f-ancien-prix").value) : null;
+
+  const donnees = {
+    nom,
+    ref: $("#f-ref").value.trim(),
+    categorie: $("#f-categorie").value.trim() || "Autre",
+    modele: $("#f-modele").value.trim(),
+    compatible: $("#f-compatible").value.trim(),
+    prix,
+    ancienPrix: (ancienPrixVal && ancienPrixVal > prix) ? ancienPrixVal : null,
+    stock: parseInt($("#f-stock").value, 10) || 0,
+    etat: $("#f-etat").value.trim() || "Occasion",
+    description: $("#f-description").value.trim(),
+    infos: $("#f-infos").value.trim(),
+    disponibilite: $("#f-disponibilite").value,
+    afficherVendu: $("#f-afficher-vendu").checked,
+    actif: $("#f-actif").checked,
+    photos: photosEnCours.slice(),
+    dateModification: maintenant
+  };
+
+  if (pieceEnEdition){
+    const idx = pieces.findIndex(p => p.id === pieceEnEdition);
+    if (idx > -1) pieces[idx] = Object.assign({}, pieces[idx], donnees);
+  } else {
+    pieces.unshift(Object.assign({ id: uid(), dateCreation: maintenant }, donnees));
+  }
+  sauvegarderPieces(pieces);
+  fermerFormulaire();
+  rendreTableau();
+  afficherToast("Article enregistré.");
+});
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT — génère le code à jour pour republier le site
+   ═══════════════════════════════════════════════════════════ */
+function genererCodeExport(){
+  const proprietes = pieces.map(p => ({
+    ref: p.ref, nom: p.nom, categorie: p.categorie, modele: p.modele,
+    compatible: p.compatible, etat: p.etat, prix: p.prix, ancienPrix: p.ancienPrix,
+    stock: p.stock, description: p.description, infos: p.infos,
+    disponibilite: p.disponibilite, afficherVendu: p.afficherVendu, actif: p.actif,
+    photos: p.photos, dateCreation: p.dateCreation, dateModification: p.dateModification
+  }));
+  return "const PIECES = " + JSON.stringify(proprietes, null, 2) + ";\n";
+}
+
+$("#btn-telecharger").addEventListener("click", () => {
+  const code = genererCodeExport();
+  const blob = new Blob([code], { type: "text/javascript" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "pieces-a-jour.js";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  afficherToast("Fichier téléchargé — envoyez-le pour publier.");
+});
+
+$("#btn-copier").addEventListener("click", async () => {
+  const code = genererCodeExport();
+  try {
+    await navigator.clipboard.writeText(code);
+    afficherToast("Texte copié dans le presse-papier.");
+  } catch(e){
+    afficherToast("Impossible de copier automatiquement, téléchargez le fichier.");
+  }
+});
+
+$("#btn-voir-site").addEventListener("click", () => {
+  window.open("./2%20temps%20deals%20premium%20corrige.html", "_blank", "noopener");
+});
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════ */
+let toastTimer = null;
+function afficherToast(texte){
+  const t = $("#toast");
+  t.textContent = texte;
+  t.classList.add("visible");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("visible"), 2800);
+}
+
+function initTableauBord(){
+  if (dejaInitialise) { rendreTableau(); return; }
+  dejaInitialise = true;
+  rendreTableau();
+}
+
+demarrer();
+</script>
+</body>
+</html>

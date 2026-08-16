@@ -578,6 +578,11 @@ const PIECES = [
     border:2px solid #fff;border-radius:6px;
     box-shadow:0 8px 20px rgba(0,0,0,.35);
   }
+  .badge-vendu.badge-reserve span{background:var(--orange)}
+  .ancien-prix{
+    font-family:'Space Mono',monospace;font-size:14px;font-weight:700;
+    color:#7FA0BD;text-decoration:line-through;margin-right:6px;
+  }
   .fiche-corps{padding:18px 18px 0;display:flex;flex-direction:column;gap:9px;flex:1}
   .ligne-ref{
     display:flex;justify-content:space-between;align-items:center;
@@ -835,6 +840,10 @@ function afficher(){
   const q = normaliser(texteRecherche.trim());
 
   const visibles = PIECES.filter(p => {
+    if (p.actif === false) return false;
+    const dispo = p.disponibilite || (p.vendu ? "Vendu" : "En stock");
+    if (dispo === "Indisponible") return false;
+    if (dispo === "Vendu" && p.afficherVendu === false) return false;
     const okCat = categorieActive === "Tout" || p.categorie === categorieActive;
     const okModele = modeleActif === "Tous modèles" || (p.modele || "Universel") === modeleActif;
     const okEtat = etatActif === "Tous" || p.etat === etatActif;
@@ -843,18 +852,24 @@ function afficher(){
     return okCat && okModele && okEtat && okTexte;
   });
 
-  const dispo = visibles.filter(p => !p.vendu).length;
+  const dispo = visibles.filter(p => (p.disponibilite || (p.vendu ? "Vendu" : "En stock")) === "En stock").length;
   $("#compteur").textContent = `${visibles.length} pièce${visibles.length>1?"s":""} · ${dispo} disponible${dispo>1?"s":""}`;
   $("#vide").hidden = visibles.length > 0;
 
   visibles.forEach(p => {
     const art = document.createElement("article");
-    art.className = "fiche" + (p.vendu ? " vendu" : "");
+    const etatDispo = p.disponibilite || (p.vendu ? "Vendu" : "En stock");
+    const estVendu = etatDispo === "Vendu";
+    const estReserve = etatDispo === "Réservé";
+    art.className = "fiche" + (estVendu ? " vendu" : "");
 
-    const photo = p.photo
-      ? `<img src="${p.photo}" alt="${p.nom}" loading="lazy">`
+    const premierePhoto = (p.photos && p.photos[0]) || p.photo;
+    const photo = premierePhoto
+      ? `<img src="${premierePhoto}" alt="${p.nom}" loading="lazy">`
       : iconePiece;
-    const tampon = p.vendu ? `<div class="badge-vendu"><span>Vendu</span></div>` : "";
+    const tampon = estVendu ? `<div class="badge-vendu"><span>Vendu</span></div>`
+                 : estReserve ? `<div class="badge-vendu badge-reserve"><span>Réservé</span></div>`
+                 : "";
     const e = p.etat.toLowerCase();
     const classeEtat = e === "neuf" ? "etat-neuf"
                      : e.includes("rouler") ? "etat-pret"
@@ -862,7 +877,11 @@ function afficher(){
                      : "etat-occasion";
     const message = encodeURIComponent(`Bonjour ! Je suis intéressé par : ${p.nom} (réf ${p.ref}) — ${p.prix}€. Toujours disponible ?`);
 
-    const bouton = p.vendu
+    const prixAffiche = (p.ancienPrix && p.ancienPrix > p.prix)
+      ? `<span class="ancien-prix">${p.ancienPrix} €</span>${p.prix} €`
+      : `${p.prix} €`;
+
+    const bouton = estVendu
       ? ""
       : `<a class="btn-fb" href="${CONFIG.facebook}" target="_blank" rel="noopener"
             aria-label="Contacter sur Facebook au sujet de ${p.nom}">
@@ -879,7 +898,7 @@ function afficher(){
         <h3>${p.nom}</h3>
         <p class="compatible">${p.compatible}</p>
         <div class="fiche-pied">
-          <p class="prix">${p.prix} € <small>· ${p.categorie} · ${p.modele || "Universel"}</small></p>
+          <p class="prix">${prixAffiche} <small>· ${p.categorie} · ${p.modele || "Universel"}</small></p>
           ${bouton}
         </div>
       </div>`;
