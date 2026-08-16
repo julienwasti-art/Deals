@@ -349,7 +349,9 @@ const PIECES = [
   .header-inner{position:relative;z-index:1;max-width:860px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
   .reseaux-header{
     display:flex;align-items:center;justify-content:center;
+    flex-wrap:wrap;row-gap:10px;
     gap:18px;
+    max-width:100%;
   }
   .logo{
     width:150px;height:150px;
@@ -378,9 +380,16 @@ const PIECES = [
   }
   .icone-reseau:focus-visible{outline:3px solid var(--ciel);outline-offset:3px}
   @media (max-width:520px){
+    .logo{width:120px;height:120px}
     .icone-reseau{width:40px;height:40px}
     .icone-reseau svg{width:18px;height:18px}
     .reseaux-header{gap:12px}
+  }
+  @media (max-width:360px){
+    .logo{width:96px;height:96px}
+    .icone-reseau{width:34px;height:34px}
+    .icone-reseau svg{width:16px;height:16px}
+    .reseaux-header{gap:8px}
   }
   .logo-monogramme{
     font-family:'Space Mono',monospace;font-weight:700;
