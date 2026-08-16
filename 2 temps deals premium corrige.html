@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pièces Scooter — Catalogue</title>
+<meta name="description" content="Catalogue de pièces de scooter d'occasion et neuves. Contact direct via Facebook.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<script>
+const CONFIG = {
+  nomBoutique: "2Temps Deals",
+  sousTitre: "Pièces d'occasion & neuves pour scooters",
+  facebook: "https://www.facebook.com/people/2Temps-Deals/61584179582958/",
+  texteBouton: "Me contacter",
+  zone: "Région de Mons · Remise en main propre ou envoi",
+  logo: "https://i.postimg.cc/05zXcvBM/IMG-1064.jpg"
+};
+
+const PIECES = [
+  {
+    ref: "ROU-001",
+    nom: "vario",
+    categorie: "variation",
+    modele: "Yamaha Nitro/booster",
+    etat: "Occasion",
+    prix: 30,
+    compatible: "Nitro / Aerox/booster",
+    photo: "https://i.postimg.cc/zvhzcNcV/B6B53B11-E55B-455B-8BB3-8D84C16FA588.png",
+    vendu: true
+  },
+  {
+    ref: "",
+    nom: "embrayage",
+    categorie: "variation",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 50,
+    compatible: "Booster 2004+",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "",
+    nom: "boite a clapet",
+    categorie: "variation",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 10,
+    compatible: "Booster 2004+",
+    photo: "https://i.postimg.cc/L4T0jLW1/4396FF43-0F8C-4CA1-8896-AF7291C0C926.png",
+    vendu: false
+  },
+  {
+    ref: "",
+    nom: "transmission",
+    categorie: "moteur",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 40,
+    compatible: "MBK Booster",
+    photo: "https://i.postimg.cc/kMxTqK9d/9E778C9E-DD18-4E16-BE45-40E63313A230.png",
+    vendu: false
+  },
+  {
+    ref: "SCO-001",
+    nom: "MBK Nitro",
+    categorie: "Scooter complet",
+    modele: "MBK Booster",
+    etat: "Prêt à rouler",
+    prix: 1500,
+    compatible: "Démarre au quart de tour, pneus récents, papiers en ordre",
+    photo: "https://i.postimg.cc/02gHrLvP/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg",
+    vendu: true
+  },
+  {
+    ref: "SCO-003",
+    nom: "MBK Booster Spirit 2012",
+    categorie: "Scooter complet",
+    modele: "MBK Booster",
+    etat: "Prêt à rouler",
+    prix: 2000,
+    compatible: "Démarre au quart de tour, pneus récents, papiers en ordre",
+    photo: "https://i.postimg.cc/xdrrQcdQ/att-SBz-CSf7Sc-Xtkk-KZMo-Dq-EQ-v-6g-JI5H3YTu5u-Tn-Utc-Y.jpg",
+    vendu: false
+  },
+  {
+    ref: "SCO-004",
+    nom: "MBK Booster Spirit 2006",
+    categorie: "Scooter complet",
+    modele: "MBK Booster",
+    etat: "Prêt à rouler",
+    prix: 1500,
+    compatible: "Démarre au quart de tour, pneus récents, papiers en ordre",
+    photo: "https://i.postimg.cc/RZwLJ8Xg/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg",
+    vendu: true
+  },
+  {
+    ref: "SCO-002",
+    nom: "Honda Wallaroo",
+    categorie: "Scooter complet",
+    modele: "Yamaha Nitro",
+    etat: "À réparer",
+    prix: 700,
+    compatible: "Moteur tourne, carbu à nettoyer, frein avant à revoir",
+    photo: "https://i.postimg.cc/ryHrqk5P/att-IFQKl87-RBHi-X1mm5b4Exv2Nxj-HZGtt-TEAt-QDOj6DSQ.jpg",
+    vendu: false
+  },
+  {
+    ref: "5BR-F4710-00",
+    nom: "Selle Nitro",
+    categorie: "Carrosserie",
+    modele: "Yamaha Nitro",
+    etat: "Occasion",
+    prix: 35,
+    compatible: "Nitro / Aerox",
+    photo: "https://i.postimg.cc/d3pH9CMY/att-s-XUTVussl-Lh-Oqw9u-2la-WCs-Phe-V53gz-CP0UNPOT8Cw.jpg",
+    vendu: false
+  },
+  {
+    ref: "5BR-F4730-00",
+    nom: "Selle Booster",
+    categorie: "Carrosserie",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 40,
+    compatible: "Booster 2004+",
+    photo: "https://i.postimg.cc/zBnKQRR3/att-k-Mz0xz6cgghd-OIVayjx-Dodbx-TB5MHMVyl-Ase-Ks8YOE.jpg",
+    vendu: false
+  },
+  {
+    ref: "CAR-001",
+    nom: "Compteur",
+    categorie: "Carrosserie",
+    modele: "Yamaha Nitro",
+    etat: "Occasion",
+    prix: 80,
+    compatible: "Yamaha Nitro",
+    photo: "https://i.postimg.cc/8PY3hZqb/1D38D209-F2A1-4338-9F69-F4529A89F8BA.jpg",
+    vendu: false
+  },
+  {
+    ref: "",
+    nom: "cable frein",
+    categorie: "cablage",
+    modele: "MBK Booster",
+    etat: "neuf",
+    prix: 10,
+    compatible: "Booster",
+    photo: "https://i.postimg.cc/L8n4ZzHf/IMG-1205.jpg",
+    vendu: false
+  },
+  {
+    ref: "TRA-001",
+    nom: "Carbu 21 Motorforce",
+    categorie: "Moteur",
+    modele: "Universel",
+    etat: "Occasion",
+    prix: 50,
+    compatible: "Universel",
+    photo: "https://i.postimg.cc/J4b4SVxz/att-RRLf8Jzdq1dl-RM-Cl4oz30x-Y3Gusrj-W3Bp-Zlgb-Mp93A.jpg",
+    vendu: false
+  },
+  {
+    ref: "ELE-001",
+    nom: "Faisceau électrique complet",
+    categorie: "cablage",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 50,
+    compatible: "Booster",
+    photo: "https://i.postimg.cc/1zCPGWz0/att-KOb6b2tp-D6Fn-Y6mq2JRx-Iw3Ettc-UJWFKj-MDQhhdlaao.jpg",
+    vendu: false
+  },
+  {
+    ref: "FIC-001",
+    nom: "Pot d'échappement sport",
+    categorie: "Moteur",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 60,
+    compatible: "Booster / Stunt",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-002",
+    nom: "Pneu arrière 130/70-13",
+    categorie: "Roues & Pneus",
+    modele: "Yamaha Nitro",
+    etat: "Neuf",
+    prix: 45,
+    compatible: "Nitro / Aerox",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-003",
+    nom: "Kit plastiques carénage complet",
+    categorie: "Carrosserie",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 120,
+    compatible: "Booster 2004+",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-004",
+    nom: "Disque de frein avant",
+    categorie: "Freinage",
+    modele: "Yamaha Nitro",
+    etat: "Neuf",
+    prix: 25,
+    compatible: "Nitro / Aerox",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-005",
+    nom: "Rétroviseurs paire",
+    categorie: "Accessoires",
+    modele: "Universel",
+    etat: "Neuf",
+    prix: 15,
+    compatible: "Universel",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-006",
+    nom: "Bougie d'allumage",
+    categorie: "Moteur",
+    modele: "Universel",
+    etat: "Neuf",
+    prix: 5,
+    compatible: "Universel 2 temps",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-007",
+    nom: "Clignotants avant/arrière",
+    categorie: "Électrique",
+    modele: "MBK Booster",
+    etat: "Occasion",
+    prix: 20,
+    compatible: "Booster 2004+",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-008",
+    nom: "Béquille centrale",
+    categorie: "Accessoires",
+    modele: "Peugeot Ludix",
+    etat: "Occasion",
+    prix: 18,
+    compatible: "Ludix",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-009",
+    nom: "Poignée de gaz + câble",
+    categorie: "cablage",
+    modele: "Yamaha Nitro",
+    etat: "Neuf",
+    prix: 12,
+    compatible: "Nitro / Aerox",
+    photo: "",
+    vendu: false
+  },
+  {
+    ref: "FIC-010",
+    nom: "Filtre à air sport",
+    categorie: "Moteur",
+    modele: "MBK Booster",
+    etat: "Neuf",
+    prix: 22,
+    compatible: "Booster / Stunt",
+    photo: "",
+    vendu: false
+  }
+];
+</script>
+
+<style>
+  :root{
+    --nuit:#081A30;        /* marine profond, showroom */
+    --marine:#0E2440;      /* marine du logo */
+    --ciel:#7EC8F5;        /* bleu ciel du logo */
+    --glacier:#BFE3FB;     /* reflet chrome bleuté */
+    --fond:#EDF3F9;        /* chrome clair */
+    --papier:#FFFFFF;
+    --acier:#5A6E82;
+    --trait:#D5E2EE;
+    --rouge:#C33B2E;
+    --vert:#1F9D5B;
+    --orange:#D9822B;
+    --ombre:0 10px 30px rgba(8,26,48,.10);
+    --ombre-haute:0 18px 40px rgba(8,26,48,.20);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    font-variation-settings:'wdth' 94;
+    background:var(--fond);
+    color:var(--marine);
+    line-height:1.55;
+  }
+  .mono{font-family:'Space Mono',monospace}
+
+  /* ═══ HERO SHOWROOM ═══ */
+  header{
+    position:relative;
+    background:
+      radial-gradient(620px 340px at 50% 12%, rgba(126,200,245,.28), transparent 70%),
+      linear-gradient(160deg, #0B2138 0%, var(--nuit) 55%, #060F1D 100%);
+    color:#fff;
+    text-align:center;
+    padding:52px 20px 46px;
+    overflow:hidden;
+  }
+  /* rayures de course en fond, très discrètes */
+  header::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(115deg,
+      rgba(126,200,245,.05) 0 2px, transparent 2px 90px);
+  }
+  .header-inner{position:relative;max-width:860px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .logo{
+    width:150px;height:150px;
+    display:flex;align-items:center;justify-content:center;
+    filter:drop-shadow(0 14px 34px rgba(126,200,245,.35));
+    animation:apparition .7s ease both;
+  }
+  .logo img{width:100%;height:100%;object-fit:contain;border-radius:18px}
+  .logo-monogramme{
+    font-family:'Space Mono',monospace;font-weight:700;
+    color:var(--ciel);text-align:center;line-height:1;
+    border:2px solid var(--ciel);border-radius:18px;
+    width:100%;height:100%;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;background:#0B2138;
+  }
+  .logo-monogramme .grand{font-size:48px;display:block}
+  .logo-monogramme .petit{font-size:11px;letter-spacing:.25em;display:block;margin-top:6px}
+  .plaque{
+    font-family:'Space Mono',monospace;
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ciel);
+    display:flex;align-items:center;gap:14px;
+  }
+  .plaque::before,.plaque::after{
+    content:"";height:1px;width:44px;
+    background:linear-gradient(90deg,transparent,var(--ciel));
+  }
+  .plaque::after{background:linear-gradient(90deg,var(--ciel),transparent)}
+  h1{
+    font-size:clamp(42px,9vw,84px);
+    font-weight:900;font-style:italic;
+    font-variation-settings:'wdth' 75;
+    text-transform:uppercase;line-height:.95;
+    letter-spacing:.01em;
+    background:linear-gradient(180deg,#FFFFFF 20%,var(--glacier) 55%,var(--ciel) 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--ciel);
+    filter:drop-shadow(0 3px 0 rgba(6,15,29,.9)) drop-shadow(0 10px 24px rgba(8,26,48,.6));
+  }
+  .sous-titre{color:#C8DCEC;font-size:17px;max-width:520px}
+  .btn-hero{
+    display:inline-flex;align-items:center;gap:10px;
+    margin-top:8px;padding:15px 30px;
+    font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--nuit);text-decoration:none;
+    background:linear-gradient(180deg,var(--glacier),var(--ciel));
+    border-radius:999px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.35) inset, 0 10px 26px rgba(126,200,245,.35);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-hero:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.5) inset, 0 16px 34px rgba(126,200,245,.5)}
+  .btn-hero svg{width:18px;height:18px}
+  .stats{
+    display:flex;gap:0;margin-top:22px;
+    border:1px solid rgba(126,200,245,.30);
+    border-radius:14px;overflow:hidden;
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(6px);
+  }
+  .stats > div{
+    padding:14px 26px;display:flex;flex-direction:column;gap:2px;
+    border-right:1px solid rgba(126,200,245,.25);
+  }
+  .stats > div:last-child{border-right:none}
+  .stats span{
+    font-family:'Space Mono',monospace;font-size:26px;font-weight:700;
+    color:var(--ciel);line-height:1;
+  }
+  .stats small{
+    font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#9FBCD4;
+  }
+  .zone{
+    margin-top:16px;font-size:12px;color:#7FA0BD;
+    font-family:'Space Mono',monospace;letter-spacing:.06em;
+  }
+  /* bande damier signature, écho des drapeaux du logo */
+  .damier{
+    height:16px;
+    background:conic-gradient(var(--marine) 90deg,#F2F7FB 90deg 180deg,var(--marine) 180deg 270deg,#F2F7FB 270deg);
+    background-size:16px 16px;
+    border-top:2px solid var(--ciel);
+  }
+  @keyframes apparition{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+
+  /* ═══ BARRE OUTILS ═══ */
+  .outils{
+    position:sticky;top:0;z-index:10;
+    background:rgba(255,255,255,.86);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--trait);
+    box-shadow:0 6px 18px rgba(8,26,48,.06);
+    padding:14px 20px;
+  }
+  .outils-inner{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:11px}
+  .recherche{
+    width:100%;padding:13px 18px;
+    font:inherit;font-size:15px;
+    border:1.5px solid var(--trait);border-radius:12px;
+    background:var(--papier);color:var(--marine);
+    box-shadow:0 2px 8px rgba(8,26,48,.05) inset;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .recherche::placeholder{color:#8FA6BA}
+  .recherche:focus{outline:none;border-color:var(--ciel);box-shadow:0 0 0 4px rgba(126,200,245,.28)}
+  .filtres{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+  .chip{
+    flex:0 0 auto;
+    font-family:'Archivo',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:.02em;
+    padding:9px 18px;
+    border:1.5px solid var(--trait);border-radius:999px;
+    background:var(--papier);color:var(--marine);
+    cursor:pointer;white-space:nowrap;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .chip:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(8,26,48,.10)}
+  .chip[aria-pressed="true"]{
+    background:linear-gradient(180deg,var(--marine),var(--nuit));
+    border-color:var(--marine);color:var(--ciel);
+    box-shadow:0 6px 16px rgba(8,26,48,.28);
+  }
+  .chip:focus-visible{outline:3px solid var(--ciel);outline-offset:2px}
+  .chip-modele{font-size:12px;padding:7px 15px;font-weight:600;background:#F4F9FD}
+  .chip-modele[aria-pressed="true"]{
+    background:linear-gradient(180deg,var(--glacier),var(--ciel));
+    border-color:var(--ciel);color:var(--nuit);
+    box-shadow:0 6px 14px rgba(126,200,245,.4);
+  }
+  .label-filtre{
+    font-family:'Space Mono',monospace;font-size:10px;
+    text-transform:uppercase;letter-spacing:.16em;color:var(--acier);
+    align-self:center;flex:0 0 auto;margin-right:4px;
+  }
+
+  /* ═══ CATALOGUE ═══ */
+  main{max-width:1120px;margin:0 auto;padding:30px 20px 70px}
+  .compteur{
+    font-family:'Space Mono',monospace;
+    font-size:12px;color:var(--acier);
+    margin-bottom:20px;text-transform:uppercase;letter-spacing:.12em;
+    display:flex;align-items:center;gap:12px;
+  }
+  .compteur::after{content:"";flex:1;height:1px;background:var(--trait)}
+  .grille{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(265px,1fr));
+    gap:22px;
+  }
+
+  /* ═══ FICHE PIÈCE ═══ */
+  .fiche{
+    background:var(--papier);
+    border:1px solid var(--trait);
+    border-radius:16px;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    box-shadow:var(--ombre);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .fiche:hover{transform:translateY(-5px);box-shadow:var(--ombre-haute)}
+  .fiche.vendu{opacity:.6;filter:saturate(.4)}
+  .fiche.vendu:hover{transform:none;box-shadow:var(--ombre)}
+  .fiche-photo{
+    aspect-ratio:4/3;position:relative;overflow:hidden;
+    background:
+      radial-gradient(300px 160px at 50% 30%, rgba(126,200,245,.16), transparent),
+      linear-gradient(165deg,#10283F,#081A30);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .fiche-photo img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .35s ease;
+  }
+  .fiche:hover .fiche-photo img{transform:scale(1.06)}
+  .fiche-photo svg{width:64px;height:64px;opacity:.9}
+  .badge-vendu{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .badge-vendu span{
+    font-weight:900;text-transform:uppercase;
+    font-size:22px;letter-spacing:.15em;font-style:italic;
+    color:#fff;background:var(--rouge);
+    padding:7px 22px;transform:rotate(-8deg);
+    border:2px solid #fff;border-radius:6px;
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+  }
+  .fiche-corps{padding:18px 18px 0;display:flex;flex-direction:column;gap:9px;flex:1}
+  .ligne-ref{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Space Mono',monospace;font-size:10px;
+    color:var(--acier);text-transform:uppercase;letter-spacing:.1em;
+  }
+  .etat{
+    padding:4px 11px;border-radius:999px;font-weight:800;
+    font-size:10px;letter-spacing:.08em;font-family:'Archivo',sans-serif;
+  }
+  .etat-occasion{background:linear-gradient(180deg,#1A3A5E,var(--marine));color:var(--glacier)}
+  .etat-neuf{background:linear-gradient(180deg,#27BD70,var(--vert));color:#fff}
+  .etat-pret{background:linear-gradient(180deg,#27BD70,var(--vert));color:#fff}
+  .etat-reparer{background:linear-gradient(180deg,#EFA04C,var(--orange));color:#fff}
+  .fiche h3{
+    font-size:19px;font-weight:800;line-height:1.2;
+    font-variation-settings:'wdth' 84;text-transform:uppercase;
+  }
+  .compatible{font-size:13.5px;color:var(--acier);padding-bottom:14px}
+  .fiche-pied{
+    margin-top:auto;
+    background:linear-gradient(165deg,#10283F,var(--nuit));
+    padding:14px 18px 16px;
+    display:flex;flex-direction:column;gap:11px;
+  }
+  .prix{
+    font-family:'Space Mono',monospace;
+    font-size:24px;font-weight:700;color:#fff;
+  }
+  .prix small{font-size:11px;color:#8FB4D2;font-weight:400}
+  .btn-fb{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    background:linear-gradient(180deg,var(--glacier),var(--ciel));
+    color:var(--nuit);
+    border:none;border-radius:10px;
+    padding:12px 14px;
+    font:inherit;font-weight:800;font-size:13.5px;
+    text-decoration:none;text-transform:uppercase;letter-spacing:.04em;
+    cursor:pointer;
+    box-shadow:0 0 0 1px rgba(255,255,255,.3) inset, 0 6px 16px rgba(126,200,245,.30);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-fb:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.45) inset, 0 10px 22px rgba(126,200,245,.45)}
+  .btn-fb:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .btn-fb svg{width:16px;height:16px;flex:0 0 auto}
+
+  .vide{
+    text-align:center;padding:70px 20px;color:var(--acier);
+    font-family:'Space Mono',monospace;font-size:14px;
+  }
+
+  /* ═══ PIED DE PAGE ═══ */
+  footer{
+    background:linear-gradient(180deg,var(--nuit),#050D19);
+    color:#8FB4D2;
+    padding:44px 20px 34px;text-align:center;
+    font-size:14px;
+  }
+  .footer-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .footer-nom{
+    font-weight:900;font-style:italic;text-transform:uppercase;
+    font-variation-settings:'wdth' 76;font-size:24px;
+    color:#fff;letter-spacing:.02em;
+  }
+  .footer-nom em{color:var(--ciel);font-style:italic}
+  footer a.btn-hero{margin-top:4px;font-size:13px;padding:12px 24px}
+  .footer-note{font-size:11px;color:#557799;font-family:'Space Mono',monospace;margin-top:10px}
+
+  @media (max-width:560px){
+    .stats > div{padding:12px 16px}
+    .stats span{font-size:21px}
+    .grille{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" id="logo"></div>
+    <p class="plaque">Pièces détachées &amp; scooters</p>
+    <h1 id="nom-boutique"></h1>
+    <p class="sous-titre" id="sous-titre"></p>
+    <a class="btn-hero" id="cta-hero" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.5H7.6V13h2.7v8h3.2z"/></svg>
+      Me contacter sur Facebook
+    </a>
+    <div class="stats" role="list">
+      <div role="listitem"><span id="stat-dispo">–</span><small>en stock</small></div>
+      <div role="listitem"><span id="stat-modeles">–</span><small>modèles couverts</small></div>
+      <div role="listitem"><span id="stat-categories">–</span><small>catégories</small></div>
+    </div>
+    <p class="zone" id="zone"></p>
+  </div>
+</header>
+<div class="damier" aria-hidden="true"></div>
+
+<div class="outils">
+  <div class="outils-inner">
+    <input type="search" class="recherche" id="recherche"
+           placeholder="Rechercher une pièce, une réf, un modèle…"
+           aria-label="Rechercher dans le catalogue">
+    <div class="filtres" id="filtres" role="group" aria-label="Filtrer par catégorie"></div>
+    <div class="filtres" id="filtres-modeles" role="group" aria-label="Filtrer par modèle de scooter"></div>
+    <div class="filtres" id="filtres-etats" role="group" aria-label="Filtrer par état" hidden></div>
+  </div>
+</div>
+
+<main>
+  <p class="compteur" id="compteur"></p>
+  <div class="grille" id="grille"></div>
+  <p class="vide" id="vide" hidden>Aucune pièce ne correspond à ta recherche.</p>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-nom">2Temps <em>Deals</em></p>
+    <p>Une pièce t'intéresse ? Un scooter à vendre ou à chercher ? Écris-moi, réponse rapide.</p>
+    <a class="btn-hero" id="lien-footer" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.5H7.6V13h2.7v8h3.2z"/></svg>
+      Discuter sur Facebook
+    </a>
+    <p class="footer-note" id="zone-footer"></p>
+  </div>
+</footer>
+
+<script>
+/* ─── Moteur du site : rien à modifier ici ─── */
+const $ = s => document.querySelector(s);
+
+document.title = CONFIG.nomBoutique + " — Catalogue de pièces scooter";
+$("#nom-boutique").textContent = CONFIG.nomBoutique;
+$("#sous-titre").textContent = CONFIG.sousTitre;
+$("#zone").textContent = CONFIG.zone;
+$("#lien-footer").href = CONFIG.facebook;
+
+/* Logo : image si fournie dans CONFIG.logo, sinon emblème "2T" */
+$("#logo").innerHTML = CONFIG.logo
+  ? `<img src="${CONFIG.logo}" alt="Logo ${CONFIG.nomBoutique}">`
+  : `<div class="logo-monogramme"><span class="grand">2T</span><span class="petit">DEALS</span></div>`;
+
+const iconePiece = `<svg viewBox="0 0 24 24" fill="none" stroke="#7EC8F5" stroke-width="1.5">
+  <circle cx="12" cy="12" r="3"/>
+  <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>
+</svg>`;
+const iconeFB = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.5H7.6V13h2.7v8h3.2z"/></svg>`;
+
+let categorieActive = "Tout";
+let modeleActif = "Tous modèles";
+let etatActif = "Tous";
+let texteRecherche = "";
+
+function categories(){
+  const set = new Set(PIECES.map(p => p.categorie));
+  return ["Tout", ...set];
+}
+
+/* Les modèles proposés s'adaptent à la catégorie choisie */
+function modeles(){
+  const base = categorieActive === "Tout"
+    ? PIECES
+    : PIECES.filter(p => p.categorie === categorieActive);
+  const set = new Set(base.map(p => p.modele || "Universel"));
+  return ["Tous modèles", ...[...set].sort()];
+}
+
+function construireFiltres(){
+  const zone = $("#filtres");
+  zone.innerHTML = "";
+  categories().forEach(cat => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = cat;
+    b.setAttribute("aria-pressed", cat === categorieActive ? "true" : "false");
+    b.addEventListener("click", () => {
+      categorieActive = cat;
+      modeleActif = "Tous modèles";   // on réinitialise les sous-filtres
+      etatActif = "Tous";
+      construireFiltres();
+      afficher();
+    });
+    zone.appendChild(b);
+  });
+  construireFiltresModeles();
+  construireFiltresEtats();
+}
+
+function construireFiltresModeles(){
+  const zone = $("#filtres-modeles");
+  zone.innerHTML = "";
+  const liste = modeles();
+  if (liste.length <= 2){ zone.hidden = true; return; }
+  zone.hidden = false;
+  const label = document.createElement("span");
+  label.className = "label-filtre";
+  label.textContent = "Modèle";
+  zone.appendChild(label);
+  liste.forEach(m => {
+    const b = document.createElement("button");
+    b.className = "chip chip-modele";
+    b.textContent = m;
+    b.setAttribute("aria-pressed", m === modeleActif ? "true" : "false");
+    b.addEventListener("click", () => {
+      modeleActif = m;
+      construireFiltresModeles();
+      afficher();
+    });
+    zone.appendChild(b);
+  });
+}
+
+/* Filtre Prêt à rouler / À réparer, visible uniquement dans "Scooter complet" */
+function construireFiltresEtats(){
+  const zone = $("#filtres-etats");
+  zone.innerHTML = "";
+  if (categorieActive !== "Scooter complet"){ zone.hidden = true; return; }
+  const set = new Set(PIECES.filter(p => p.categorie === "Scooter complet").map(p => p.etat));
+  if (set.size < 2 && etatActif === "Tous"){ zone.hidden = true; return; }
+  zone.hidden = false;
+  const label = document.createElement("span");
+  label.className = "label-filtre";
+  label.textContent = "État";
+  zone.appendChild(label);
+  ["Tous", ...set].forEach(e => {
+    const b = document.createElement("button");
+    b.className = "chip chip-modele";
+    b.textContent = e;
+    b.setAttribute("aria-pressed", e === etatActif ? "true" : "false");
+    b.addEventListener("click", () => {
+      etatActif = e;
+      construireFiltresEtats();
+      afficher();
+    });
+    zone.appendChild(b);
+  });
+}
+
+function normaliser(t){
+  return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
+function afficher(){
+  const grille = $("#grille");
+  grille.innerHTML = "";
+  const q = normaliser(texteRecherche.trim());
+
+  const visibles = PIECES.filter(p => {
+    const okCat = categorieActive === "Tout" || p.categorie === categorieActive;
+    const okModele = modeleActif === "Tous modèles" || (p.modele || "Universel") === modeleActif;
+    const okEtat = etatActif === "Tous" || p.etat === etatActif;
+    const bloc = normaliser(`${p.nom} ${p.ref} ${p.compatible} ${p.categorie} ${p.modele || ""} ${p.etat}`);
+    const okTexte = !q || bloc.includes(q);
+    return okCat && okModele && okEtat && okTexte;
+  });
+
+  const dispo = visibles.filter(p => !p.vendu).length;
+  $("#compteur").textContent = `${visibles.length} pièce${visibles.length>1?"s":""} · ${dispo} disponible${dispo>1?"s":""}`;
+  $("#vide").hidden = visibles.length > 0;
+
+  visibles.forEach(p => {
+    const art = document.createElement("article");
+    art.className = "fiche" + (p.vendu ? " vendu" : "");
+
+    const photo = p.photo
+      ? `<img src="${p.photo}" alt="${p.nom}" loading="lazy">`
+      : iconePiece;
+    const tampon = p.vendu ? `<div class="badge-vendu"><span>Vendu</span></div>` : "";
+    const e = p.etat.toLowerCase();
+    const classeEtat = e === "neuf" ? "etat-neuf"
+                     : e.includes("rouler") ? "etat-pret"
+                     : e.includes("réparer") || e.includes("reparer") ? "etat-reparer"
+                     : "etat-occasion";
+    const message = encodeURIComponent(`Bonjour ! Je suis intéressé par : ${p.nom} (réf ${p.ref}) — ${p.prix}€. Toujours disponible ?`);
+
+    const bouton = p.vendu
+      ? ""
+      : `<a class="btn-fb" href="${CONFIG.facebook}" target="_blank" rel="noopener"
+            aria-label="Contacter sur Facebook au sujet de ${p.nom}">
+           ${iconeFB} ${CONFIG.texteBouton}
+         </a>`;
+
+    art.innerHTML = `
+      <div class="fiche-photo">${photo}${tampon}</div>
+      <div class="fiche-corps">
+        <div class="ligne-ref">
+          <span>Réf ${p.ref}</span>
+          <span class="etat ${classeEtat}">${p.etat}</span>
+        </div>
+        <h3>${p.nom}</h3>
+        <p class="compatible">${p.compatible}</p>
+        <div class="fiche-pied">
+          <p class="prix">${p.prix} € <small>· ${p.categorie} · ${p.modele || "Universel"}</small></p>
+          ${bouton}
+        </div>
+      </div>`;
+    grille.appendChild(art);
+  });
+}
+
+$("#recherche").addEventListener("input", e => {
+  texteRecherche = e.target.value;
+  afficher();
+});
+
+construireFiltres();
+afficher();
+
+/* Héro : bouton + bandeau de chiffres, calculés depuis l'inventaire */
+$("#cta-hero").href = CONFIG.facebook;
+$("#stat-dispo").textContent = PIECES.filter(p => !p.vendu).length;
+$("#stat-modeles").textContent = new Set(PIECES.map(p => p.modele || "Universel")).size;
+$("#stat-categories").textContent = new Set(PIECES.map(p => p.categorie)).size;
+$("#zone-footer").textContent = CONFIG.zone;
+</script>
+</body>
+</html>
