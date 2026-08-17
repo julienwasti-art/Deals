@@ -545,8 +545,8 @@ const PIECES = [
 
   /* ═══ FICHE PIÈCE ═══ */
   .fiche{
-    background:var(--papier);
-    border:1px solid var(--trait);
+    background:linear-gradient(165deg,#10283F,var(--nuit));
+    border:1px solid rgba(126,200,245,.18);
     border-radius:16px;
     display:flex;flex-direction:column;
     overflow:hidden;
@@ -587,7 +587,7 @@ const PIECES = [
   .ligne-ref{
     display:flex;justify-content:space-between;align-items:center;
     font-family:'Space Mono',monospace;font-size:10px;
-    color:var(--acier);text-transform:uppercase;letter-spacing:.1em;
+    color:#8FB4D2;text-transform:uppercase;letter-spacing:.1em;
   }
   .etat{
     padding:4px 11px;border-radius:999px;font-weight:800;
@@ -600,8 +600,9 @@ const PIECES = [
   .fiche h3{
     font-size:19px;font-weight:800;line-height:1.2;
     font-variation-settings:'wdth' 84;text-transform:uppercase;
+    color:#fff;
   }
-  .compatible{font-size:13.5px;color:var(--acier);padding-bottom:14px}
+  .compatible{font-size:13.5px;color:#9FBCD4;padding-bottom:14px}
   .fiche-pied{
     margin-top:auto;
     background:linear-gradient(165deg,#10283F,var(--nuit));
