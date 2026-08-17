@@ -459,15 +459,23 @@
    FILET DE SÉCURITÉ — si quoi que ce soit plante, on affiche un
    message au lieu de laisser une page blanche.
    ═══════════════════════════════════════════════════════════ */
-window.addEventListener("error", e => {
+function afficherErreurTechnique(prefixe, e){
   try {
     document.getElementById("ecran-admin").hidden = true;
     const ecranConnexion = document.getElementById("ecran-connexion");
     ecranConnexion.hidden = false;
     const msg = document.getElementById("message-connexion");
-    msg.textContent = "Erreur technique : " + (e && e.message ? e.message : "inconnue") + ". Essaie d'ouvrir ce fichier directement dans Safari ou Chrome (pas dans un aperçu/app tierce).";
+    const texte = (e && e.message) ? e.message : (typeof e === "string" ? e : "inconnue");
+    msg.textContent = prefixe + " : " + texte;
     msg.classList.add("visible");
   } catch(_erreurAffichage){}
+}
+
+window.addEventListener("error", e => {
+  afficherErreurTechnique("Erreur technique", e && e.error ? e.error : (e && e.message));
+});
+window.addEventListener("unhandledrejection", e => {
+  afficherErreurTechnique("Erreur technique (promesse)", e && e.reason);
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -584,14 +592,26 @@ function afficherErreurChargement(){
   $("#form-connexion button[type=submit]").disabled = true;
 }
 
-async function demarrer(){
-  if (!supabase){ afficherErreurChargement(); return; }
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session){
+function ouvrirEspaceAdmin(){
+  try {
     afficherEcran("ecran-admin");
     initTableauBord();
-  } else {
-    afficherEcran("ecran-connexion");
+  } catch(e){
+    afficherErreurTechnique("Erreur à l'ouverture de l'espace admin", e);
+  }
+}
+
+async function demarrer(){
+  if (!supabase){ afficherErreurChargement(); return; }
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session){
+      ouvrirEspaceAdmin();
+    } else {
+      afficherEcran("ecran-connexion");
+    }
+  } catch(e){
+    afficherErreurTechnique("Erreur au démarrage", e);
   }
 }
 
@@ -604,14 +624,18 @@ $("#form-connexion").addEventListener("submit", async e => {
   const btn = e.target.querySelector('button[type="submit"]');
   msg.classList.remove("visible");
   btn.disabled = true;
-  const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-  btn.disabled = false;
-  if (error){
-    msg.textContent = "Identifiant ou mot de passe incorrect.";
-    msg.classList.add("visible");
-  } else {
-    afficherEcran("ecran-admin");
-    initTableauBord();
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    btn.disabled = false;
+    if (error){
+      msg.textContent = "Identifiant ou mot de passe incorrect.";
+      msg.classList.add("visible");
+    } else {
+      ouvrirEspaceAdmin();
+    }
+  } catch(e){
+    btn.disabled = false;
+    afficherErreurTechnique("Erreur pendant la connexion", e);
   }
 });
 
