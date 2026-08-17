@@ -86,12 +86,6 @@
     display:block;width:100%;text-align:center;margin-top:16px;font-size:12px;
     color:var(--acier);text-decoration:underline;cursor:pointer;background:none;border:none;
   }
-  .debug-connexion{
-    margin-top:16px;padding:10px 12px;border-radius:8px;
-    background:#0E2440;color:#7EC8F5;font-family:'Space Mono',monospace;
-    font-size:10.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
-    max-height:180px;overflow-y:auto;
-  }
 
   /* ═══ TOPBAR ADMIN ═══ */
   .topbar-admin{
@@ -292,7 +286,6 @@
       </div>
       <button type="submit" class="btn-primaire">Se connecter</button>
     </form>
-    <pre id="debug-connexion" class="debug-connexion" hidden></pre>
   </div>
 </div>
 
@@ -466,45 +459,15 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   DIAGNOSTIC MINIMAL — TABLEAU DE BORD DÉSACTIVÉ TEMPORAIREMENT
-   Objectif unique : prouver que Supabase Auth fonctionne,
-   indépendamment de tout le reste (catalogue, localStorage,
-   ancienne logique admin). Ne pas réactiver le dashboard ici.
+   DIAGNOSTIC ULTRA SIMPLE — prouve uniquement que Supabase Auth
+   fonctionne. Aucun dashboard, catalogue, localStorage ou
+   ancienne logique admin n'est chargé après connexion.
    ═══════════════════════════════════════════════════════════ */
-
-const CLE_DEBUG = "admin2td_debug_v1";
-function debugLog(message){
-  try {
-    const heure = new Date().toLocaleTimeString("fr-BE");
-    const historique = sessionStorage.getItem(CLE_DEBUG) || "";
-    const maj = historique + "[" + heure + "] " + message + "\n";
-    sessionStorage.setItem(CLE_DEBUG, maj);
-    const zone = document.getElementById("debug-connexion");
-    if (zone){ zone.hidden = false; zone.textContent = maj; zone.scrollTop = zone.scrollHeight; }
-  } catch(_e){}
-}
-(function afficherJournalPrecedent(){
-  try {
-    const zone = document.getElementById("debug-connexion");
-    const historique = sessionStorage.getItem(CLE_DEBUG);
-    if (zone && historique){ zone.hidden = false; zone.textContent = historique; }
-  } catch(_e){}
-})();
-debugLog("Page chargée (script diagnostic minimal)");
-
 const $ = s => document.querySelector(s);
 
 const SUPABASE_URL = "https://zykhbgrpxpscklhimgje.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_0SBarcoZVSCCCh1Qugm0ug_BTlN45fZ";
 const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-debugLog("Client Supabase : " + (supabase ? "créé" : "ÉCHEC (librairie non chargée)"));
-
-window.addEventListener("error", e => {
-  debugLog("❌ Erreur JS : " + (e && e.message ? e.message : "inconnue"));
-});
-window.addEventListener("unhandledrejection", e => {
-  debugLog("❌ Erreur promesse : " + (e && e.reason && e.reason.message ? e.reason.message : String(e && e.reason)));
-});
 
 function afficherEcran(id){
   ["ecran-connexion","ecran-admin"].forEach(autre => {
@@ -512,41 +475,32 @@ function afficherEcran(id){
   });
 }
 
-/* Remplace tout le contenu de la page par un écran de diagnostic brut */
-function afficherDiagnostic(titre, lignes){
+/* Remplace tout le contenu de la page par un message plein écran */
+function remplacerPageEntiere(titre, details){
   document.body.innerHTML =
     '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;' +
     'background:#081A30;color:#fff;font-family:\'Space Mono\',monospace;text-align:center;padding:24px;">' +
     '<div>' +
     '<h1 style="font-size:22px;font-weight:700;margin-bottom:18px;color:#7EC8F5;">' + titre + '</h1>' +
     '<pre style="white-space:pre-wrap;font-size:13px;color:#fff;text-align:left;background:#0E2440;' +
-    'padding:16px;border-radius:10px;">' + lignes + '</pre>' +
+    'padding:16px;border-radius:10px;">' + details + '</pre>' +
     '</div></div>';
 }
 
+/* Au chargement : session déjà active, ou formulaire de connexion */
 async function demarrer(){
-  if (!supabase){ debugLog("❌ Pas de client Supabase, arrêt"); afficherEcran("ecran-connexion"); return; }
-  debugLog("demarrer() : appel getSession()...");
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session){
-      debugLog("demarrer() : SESSION TROUVÉE (email=" + (session.user ? session.user.email : "?") + ")");
-      afficherDiagnostic("SESSION TROUVÉE",
-        "Une session Supabase existait déjà au chargement.\nEmail : " + (session.user ? session.user.email : "inconnu"));
-    } else {
-      debugLog("demarrer() : aucune session, affichage de l'écran de connexion");
-      afficherEcran("ecran-connexion");
-    }
-  } catch(e){
-    debugLog("❌ Erreur dans demarrer() : " + (e && e.message));
+  if (!supabase) return;
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session){
+    remplacerPageEntiere("SESSION DÉJÀ ACTIVE", "Email : " + (session.user ? session.user.email : "inconnu"));
+  } else {
     afficherEcran("ecran-connexion");
   }
 }
 
 $("#form-connexion").addEventListener("submit", async e => {
   e.preventDefault();
-  debugLog("Formulaire soumis, preventDefault() appelé");
-  if (!supabase){ debugLog("❌ Pas de client Supabase, abandon"); return; }
+  if (!supabase) return;
 
   const email = $("#login-user").value.trim();
   const pass = $("#login-pass").value;
@@ -555,32 +509,18 @@ $("#form-connexion").addEventListener("submit", async e => {
   msg.classList.remove("visible");
   btn.disabled = true;
 
-  debugLog("Appel signInWithPassword() pour " + email + "...");
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-    btn.disabled = false;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false;
 
-    if (error){
-      debugLog("❌ signInWithPassword() a renvoyé une erreur : " + error.message);
-      msg.textContent = "Erreur Supabase : " + error.message;
-      msg.classList.add("visible");
-      return;
-    }
-
-    const sessionExiste = !!(data && data.session);
-    const emailUtilisateur = (data && data.user && data.user.email) ? data.user.email : "inconnu";
-    debugLog("✅ Connexion Supabase réussie. data.session=" + sessionExiste + ", email=" + emailUtilisateur);
-
-    afficherDiagnostic("CONNEXION RÉUSSIE - SESSION SUPABASE ACTIVE",
-      "Connexion Supabase réussie\n" +
-      "data.session existe : " + sessionExiste + "\n" +
-      "Email (data.user) : " + emailUtilisateur);
-  } catch(e){
-    btn.disabled = false;
-    debugLog("❌ Exception pendant signInWithPassword() : " + (e && e.message));
-    msg.textContent = "Erreur technique : " + (e && e.message ? e.message : "inconnue");
+  if (error){
+    msg.textContent = error.message;
     msg.classList.add("visible");
+    return;
   }
+
+  const emailUtilisateur = (data && data.user && data.user.email) ? data.user.email : "inconnu";
+  remplacerPageEntiere("CONNEXION RÉUSSIE - SESSION SUPABASE ACTIVE",
+    "Email (data.user) : " + emailUtilisateur);
 });
 
 demarrer();
