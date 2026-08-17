@@ -465,7 +465,7 @@ const CLE_PIECES = "admin2td_pieces_v1";
    ═══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = "https://zykhbgrpxpscklhimgje.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_0SBarcoZVSCCCh1Qugm0ug_BTlN45fZ";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const ETATS_PAR_DEFAUT = ["Neuf","Comme neuf","Très bon état","Bon état","État correct","Occasion","À restaurer"];
 
@@ -556,7 +556,16 @@ function afficherEcran(id){
   });
 }
 
+function afficherErreurChargement(){
+  afficherEcran("ecran-connexion");
+  const msg = $("#message-connexion");
+  msg.textContent = "Impossible de charger la connexion (librairie Supabase non chargée). Vérifiez votre connexion internet, puis rechargez la page.";
+  msg.classList.add("visible");
+  $("#form-connexion button[type=submit]").disabled = true;
+}
+
 async function demarrer(){
+  if (!supabase){ afficherErreurChargement(); return; }
   const { data: { session } } = await supabase.auth.getSession();
   if (session){
     afficherEcran("ecran-admin");
@@ -568,6 +577,7 @@ async function demarrer(){
 
 $("#form-connexion").addEventListener("submit", async e => {
   e.preventDefault();
+  if (!supabase){ afficherErreurChargement(); return; }
   const email = $("#login-user").value.trim();
   const pass = $("#login-pass").value;
   const msg = $("#message-connexion");
@@ -586,18 +596,20 @@ $("#form-connexion").addEventListener("submit", async e => {
 });
 
 $("#btn-deconnexion").addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  if (supabase) await supabase.auth.signOut();
   afficherEcran("ecran-connexion");
   $("#login-user").value = "";
   $("#login-pass").value = "";
 });
 
 /* Si la session expire ou est invalidée ailleurs, on repasse à l'écran de connexion */
-supabase.auth.onAuthStateChange((_evenement, session) => {
-  if (!session){
-    afficherEcran("ecran-connexion");
-  }
-});
+if (supabase){
+  supabase.auth.onAuthStateChange((_evenement, session) => {
+    if (!session){
+      afficherEcran("ecran-connexion");
+    }
+  });
+}
 
 /* ═══════════════════════════════════════════════════════════
    TABLEAU DE BORD
