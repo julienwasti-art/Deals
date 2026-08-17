@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --nuit:#081A30;
@@ -264,32 +265,6 @@
 </head>
 <body>
 
-<!-- ═══ ÉCRAN : CRÉATION DU COMPTE (1ère utilisation) ═══ -->
-<div id="ecran-creation" class="ecran-connexion" hidden>
-  <div class="carte-connexion">
-    <p class="plaque-admin">2Temps Deals · Admin</p>
-    <h1>Créer l'accès admin</h1>
-    <p class="sous">Premier lancement — choisissez votre identifiant et votre mot de passe. Ils resteront enregistrés uniquement sur cet appareil.</p>
-    <div id="message-creation" class="message erreur"></div>
-    <form id="form-creation">
-      <div class="champ">
-        <label for="creation-user">Nom d'utilisateur</label>
-        <input id="creation-user" type="text" autocomplete="username" required>
-      </div>
-      <div class="champ">
-        <label for="creation-pass">Mot de passe</label>
-        <input id="creation-pass" type="password" autocomplete="new-password" minlength="6" required>
-        <small>6 caractères minimum</small>
-      </div>
-      <div class="champ">
-        <label for="creation-pass2">Confirmer le mot de passe</label>
-        <input id="creation-pass2" type="password" autocomplete="new-password" required>
-      </div>
-      <button type="submit" class="btn-primaire">Créer mon accès</button>
-    </form>
-  </div>
-</div>
-
 <!-- ═══ ÉCRAN : CONNEXION ═══ -->
 <div id="ecran-connexion" class="ecran-connexion" hidden>
   <div class="carte-connexion">
@@ -299,8 +274,8 @@
     <div id="message-connexion" class="message erreur"></div>
     <form id="form-connexion">
       <div class="champ">
-        <label for="login-user">Nom d'utilisateur</label>
-        <input id="login-user" type="text" autocomplete="username" required>
+        <label for="login-user">Adresse email</label>
+        <input id="login-user" type="email" autocomplete="email" required>
       </div>
       <div class="champ">
         <label for="login-pass">Mot de passe</label>
@@ -308,7 +283,6 @@
       </div>
       <button type="submit" class="btn-primaire">Se connecter</button>
     </form>
-    <button type="button" id="lien-reinit" class="lien-discret">Identifiants oubliés / réinitialiser l'accès</button>
   </div>
 </div>
 
@@ -484,9 +458,14 @@
 /* ═══════════════════════════════════════════════════════════
    DONNÉES — clés de stockage local (propres à cet appareil)
    ═══════════════════════════════════════════════════════════ */
-const CLE_AUTH = "admin2td_auth_v1";
 const CLE_PIECES = "admin2td_pieces_v1";
-const CLE_SESSION = "admin2td_session_v1";
+
+/* ═══════════════════════════════════════════════════════════
+   SUPABASE — connexion au projet
+   ═══════════════════════════════════════════════════════════ */
+const SUPABASE_URL = "https://zykhbgrpxpscklhimgje.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_0SBarcoZVSCCCh1Qugm0ug_BTlN45fZ";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ETATS_PAR_DEFAUT = ["Neuf","Comme neuf","Très bon état","Bon état","État correct","Occasion","À restaurer"];
 
@@ -524,12 +503,6 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 
 function uid(){
   return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
-}
-
-async function sha256(texte){
-  const donnees = new TextEncoder().encode(texte);
-  const hachage = await crypto.subtle.digest("SHA-256", donnees);
-  return Array.from(new Uint8Array(hachage)).map(o => o.toString(16).padStart(2,"0")).join("");
 }
 
 function migrerPiece(p){
@@ -572,24 +545,20 @@ function sauvegarderPieces(liste){
 let pieces = chargerPieces();
 
 /* ═══════════════════════════════════════════════════════════
-   AUTHENTIFICATION
+   AUTHENTIFICATION — Supabase Auth (email + mot de passe)
+   Aucune inscription possible depuis le site : seuls les comptes
+   créés manuellement dans le tableau de bord Supabase peuvent
+   se connecter.
    ═══════════════════════════════════════════════════════════ */
-function getAuth(){
-  const brut = localStorage.getItem(CLE_AUTH);
-  return brut ? JSON.parse(brut) : null;
-}
-
 function afficherEcran(id){
-  ["ecran-creation","ecran-connexion","ecran-admin"].forEach(autre => {
+  ["ecran-connexion","ecran-admin"].forEach(autre => {
     $("#" + autre).hidden = (autre !== id);
   });
 }
 
-function demarrer(){
-  const auth = getAuth();
-  if (!auth){
-    afficherEcran("ecran-creation");
-  } else if (sessionStorage.getItem(CLE_SESSION)){
+async function demarrer(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session){
     afficherEcran("ecran-admin");
     initTableauBord();
   } else {
@@ -597,61 +566,36 @@ function demarrer(){
   }
 }
 
-$("#form-creation").addEventListener("submit", async e => {
-  e.preventDefault();
-  const nomUtilisateur = $("#creation-user").value.trim();
-  const pass = $("#creation-pass").value;
-  const pass2 = $("#creation-pass2").value;
-  const msg = $("#message-creation");
-  msg.classList.remove("visible");
-  if (!nomUtilisateur || pass.length < 6){
-    msg.textContent = "Identifiant requis et mot de passe de 6 caractères minimum.";
-    msg.classList.add("visible");
-    return;
-  }
-  if (pass !== pass2){
-    msg.textContent = "Les deux mots de passe ne correspondent pas.";
-    msg.classList.add("visible");
-    return;
-  }
-  const hachage = await sha256(pass);
-  localStorage.setItem(CLE_AUTH, JSON.stringify({ utilisateur: nomUtilisateur, hachage }));
-  sessionStorage.setItem(CLE_SESSION, "1");
-  afficherEcran("ecran-admin");
-  initTableauBord();
-});
-
 $("#form-connexion").addEventListener("submit", async e => {
   e.preventDefault();
-  const nomUtilisateur = $("#login-user").value.trim();
+  const email = $("#login-user").value.trim();
   const pass = $("#login-pass").value;
   const msg = $("#message-connexion");
-  const auth = getAuth();
-  const hachage = await sha256(pass);
-  if (auth && nomUtilisateur === auth.utilisateur && hachage === auth.hachage){
-    msg.classList.remove("visible");
-    sessionStorage.setItem(CLE_SESSION, "1");
-    afficherEcran("ecran-admin");
-    initTableauBord();
-  } else {
+  const btn = e.target.querySelector('button[type="submit"]');
+  msg.classList.remove("visible");
+  btn.disabled = true;
+  const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false;
+  if (error){
     msg.textContent = "Identifiant ou mot de passe incorrect.";
     msg.classList.add("visible");
+  } else {
+    afficherEcran("ecran-admin");
+    initTableauBord();
   }
 });
 
-$("#btn-deconnexion").addEventListener("click", () => {
-  sessionStorage.removeItem(CLE_SESSION);
+$("#btn-deconnexion").addEventListener("click", async () => {
+  await supabase.auth.signOut();
   afficherEcran("ecran-connexion");
   $("#login-user").value = "";
   $("#login-pass").value = "";
 });
 
-$("#lien-reinit").addEventListener("click", () => {
-  const ok = confirm("Réinitialiser l'accès admin ? Vous devrez recréer un identifiant et un mot de passe. Les articles enregistrés ne seront pas supprimés.");
-  if (ok){
-    localStorage.removeItem(CLE_AUTH);
-    sessionStorage.removeItem(CLE_SESSION);
-    afficherEcran("ecran-creation");
+/* Si la session expire ou est invalidée ailleurs, on repasse à l'écran de connexion */
+supabase.auth.onAuthStateChange((_evenement, session) => {
+  if (!session){
+    afficherEcran("ecran-connexion");
   }
 });
 
