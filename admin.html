@@ -86,6 +86,12 @@
     display:block;width:100%;text-align:center;margin-top:16px;font-size:12px;
     color:var(--acier);text-decoration:underline;cursor:pointer;background:none;border:none;
   }
+  .debug-connexion{
+    margin-top:16px;padding:10px 12px;border-radius:8px;
+    background:#0E2440;color:#7EC8F5;font-family:'Space Mono',monospace;
+    font-size:10.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
+    max-height:180px;overflow-y:auto;
+  }
 
   /* ═══ TOPBAR ADMIN ═══ */
   .topbar-admin{
@@ -286,6 +292,7 @@
       </div>
       <button type="submit" class="btn-primaire">Se connecter</button>
     </form>
+    <pre id="debug-connexion" class="debug-connexion" hidden></pre>
   </div>
 </div>
 
@@ -459,16 +466,42 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════
+   JOURNAL DE DIAGNOSTIC — visible à l'écran, survit à un
+   rechargement complet de la page (stocké en sessionStorage).
+   À retirer une fois le problème de connexion résolu.
+   ═══════════════════════════════════════════════════════════ */
+const CLE_DEBUG = "admin2td_debug_v1";
+function debugLog(message){
+  try {
+    const heure = new Date().toLocaleTimeString("fr-BE");
+    const historique = sessionStorage.getItem(CLE_DEBUG) || "";
+    const maj = historique + "[" + heure + "] " + message + "\n";
+    sessionStorage.setItem(CLE_DEBUG, maj);
+    const zone = document.getElementById("debug-connexion");
+    if (zone){ zone.hidden = false; zone.textContent = maj; zone.scrollTop = zone.scrollHeight; }
+  } catch(_e){}
+}
+(function afficherJournalPrecedent(){
+  try {
+    const zone = document.getElementById("debug-connexion");
+    const historique = sessionStorage.getItem(CLE_DEBUG);
+    if (zone && historique){ zone.hidden = false; zone.textContent = historique; }
+  } catch(_e){}
+})();
+debugLog("Page chargée (avant même le script principal)");
+
+/* ═══════════════════════════════════════════════════════════
    FILET DE SÉCURITÉ — si quoi que ce soit plante, on affiche un
    message au lieu de laisser une page blanche.
    ═══════════════════════════════════════════════════════════ */
 function afficherErreurTechnique(prefixe, e){
   try {
+    const texte = (e && e.message) ? e.message : (typeof e === "string" ? e : "inconnue");
+    debugLog("❌ " + prefixe + " : " + texte);
     document.getElementById("ecran-admin").hidden = true;
     const ecranConnexion = document.getElementById("ecran-connexion");
     ecranConnexion.hidden = false;
     const msg = document.getElementById("message-connexion");
-    const texte = (e && e.message) ? e.message : (typeof e === "string" ? e : "inconnue");
     msg.textContent = prefixe + " : " + texte;
     msg.classList.add("visible");
   } catch(_erreurAffichage){}
@@ -492,6 +525,7 @@ const CLE_PIECES = "admin2td_pieces_v1";
 const SUPABASE_URL = "https://zykhbgrpxpscklhimgje.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_0SBarcoZVSCCCh1Qugm0ug_BTlN45fZ";
 const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+debugLog("Client Supabase : " + (supabase ? "créé" : "ÉCHEC (librairie non chargée)"));
 
 const ETATS_PAR_DEFAUT = ["Neuf","Comme neuf","Très bon état","Bon état","État correct","Occasion","À restaurer"];
 
@@ -596,18 +630,23 @@ function afficherErreurChargement(){
 }
 
 function ouvrirEspaceAdmin(){
+  debugLog("ouvrirEspaceAdmin() : début");
   try {
     afficherEcran("ecran-admin");
     initTableauBord();
+    debugLog("ouvrirEspaceAdmin() : tableau de bord affiché avec succès");
   } catch(e){
     afficherErreurTechnique("Erreur à l'ouverture de l'espace admin", e);
   }
 }
 
 async function demarrer(){
+  debugLog("demarrer() : début, supabase=" + (supabase ? "OK" : "NULL"));
   if (!supabase){ afficherErreurChargement(); return; }
   try {
+    debugLog("demarrer() : appel getSession()...");
     const { data: { session } } = await supabase.auth.getSession();
+    debugLog("demarrer() : getSession() a répondu, session=" + (session ? "existe" : "aucune"));
     if (session){
       ouvrirEspaceAdmin();
     } else {
@@ -620,6 +659,7 @@ async function demarrer(){
 
 $("#form-connexion").addEventListener("submit", async e => {
   e.preventDefault();
+  debugLog("Formulaire soumis, preventDefault() appelé");
   if (!supabase){ afficherErreurChargement(); return; }
   const email = $("#login-user").value.trim();
   const pass = $("#login-pass").value;
@@ -627,8 +667,10 @@ $("#form-connexion").addEventListener("submit", async e => {
   const btn = e.target.querySelector('button[type="submit"]');
   msg.classList.remove("visible");
   btn.disabled = true;
+  debugLog("Appel signInWithPassword() pour " + email + "...");
   try {
     const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    debugLog("signInWithPassword() a répondu, error=" + (error ? error.message : "aucune"));
     btn.disabled = false;
     if (error){
       msg.textContent = "Identifiant ou mot de passe incorrect.";
