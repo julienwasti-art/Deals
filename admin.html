@@ -456,6 +456,21 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════
+   FILET DE SÉCURITÉ — si quoi que ce soit plante, on affiche un
+   message au lieu de laisser une page blanche.
+   ═══════════════════════════════════════════════════════════ */
+window.addEventListener("error", e => {
+  try {
+    document.getElementById("ecran-admin").hidden = true;
+    const ecranConnexion = document.getElementById("ecran-connexion");
+    ecranConnexion.hidden = false;
+    const msg = document.getElementById("message-connexion");
+    msg.textContent = "Erreur technique : " + (e && e.message ? e.message : "inconnue") + ". Essaie d'ouvrir ce fichier directement dans Safari ou Chrome (pas dans un aperçu/app tierce).";
+    msg.classList.add("visible");
+  } catch(_erreurAffichage){}
+});
+
+/* ═══════════════════════════════════════════════════════════
    DONNÉES — clés de stockage local (propres à cet appareil)
    ═══════════════════════════════════════════════════════════ */
 const CLE_PIECES = "admin2td_pieces_v1";
@@ -530,16 +545,21 @@ function migrerPiece(p){
 }
 
 function chargerPieces(){
-  const brut = localStorage.getItem(CLE_PIECES);
-  if (brut){
-    try { return JSON.parse(brut); } catch(e){ /* ignore, on repart des données initiales */ }
+  try {
+    const brut = localStorage.getItem(CLE_PIECES);
+    if (brut){
+      try { return JSON.parse(brut); } catch(e){ /* ignore, on repart des données initiales */ }
+    }
+    const migrees = PIECES_INITIALES.map(migrerPiece);
+    sauvegarderPieces(migrees);
+    return migrees;
+  } catch(e){
+    /* stockage local inaccessible (aperçu restreint, etc.) : on continue en mémoire seulement */
+    return PIECES_INITIALES.map(migrerPiece);
   }
-  const migrees = PIECES_INITIALES.map(migrerPiece);
-  sauvegarderPieces(migrees);
-  return migrees;
 }
 function sauvegarderPieces(liste){
-  localStorage.setItem(CLE_PIECES, JSON.stringify(liste));
+  try { localStorage.setItem(CLE_PIECES, JSON.stringify(liste)); } catch(e){ /* stockage local inaccessible, on continue sans sauvegarder */ }
 }
 
 let pieces = chargerPieces();
