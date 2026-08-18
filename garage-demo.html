@@ -426,43 +426,25 @@ body.allege .poussiere{display:none}
 .fleche-glisse{width:34px;height:34px;animation:glisse 1.6s ease infinite}
 @keyframes glisse{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(10px);opacity:1}}
 
-/* ── podium tournant scooters vendus (zone entrée) ── */
+/* ── défilé scooters vendus (zone entrée) — bande horizontale auto-défilante ── */
 .scene-podium{
   position:absolute;left:0;right:0;bottom:20%;z-index:4;
-  height:min(280px,32vh);
-  perspective:1300px;
-  display:flex;align-items:flex-end;justify-content:center;
+  height:min(240px,30vh);
+  display:flex;align-items:flex-end;
+  gap:clamp(20px,4.5vw,48px);
+  padding:0 8vw;
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x;
+  scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
 }
-.podium-base{
-  position:absolute;left:50%;bottom:-6%;transform:translateX(-50%) rotateX(76deg);
-  width:min(70vw,620px);height:min(70vw,620px);border-radius:50%;
-  background:
-    radial-gradient(ellipse at center, rgba(20,26,33,.95) 0%, rgba(10,14,19,.7) 45%, transparent 74%),
-    repeating-conic-gradient(rgba(255,255,255,.02) 0deg 2deg, transparent 2deg 8deg);
-  box-shadow:0 0 0 1px rgba(95,212,255,.1) inset;
-  pointer-events:none;
-}
-.podium-anneau-led{
-  position:absolute;left:50%;bottom:-4.5%;transform:translateX(-50%) rotateX(76deg);
-  width:min(64vw,560px);height:min(64vw,560px);border-radius:50%;
-  box-shadow:0 0 0 2px rgba(95,212,255,.45), 0 0 34px 6px rgba(95,212,255,.32), 0 0 80px 18px rgba(95,212,255,.12);
-  pointer-events:none;
-  animation:anneauPulse 3.6s ease infinite;
-}
-@keyframes anneauPulse{0%,100%{opacity:.55}50%{opacity:1}}
-@media (prefers-reduced-motion: reduce){.podium-anneau-led{animation:none}}
-.podium-ring{
-  position:absolute;left:50%;bottom:14%;width:0;height:0;
-  transform-style:preserve-3d;
-  transform:rotateY(var(--rotation,0deg));
-}
+.scene-podium::-webkit-scrollbar{display:none}
 .carte-scooter{
-  position:absolute;left:0;bottom:0;
-  width:min(150px,24vw);
+  flex:0 0 auto;
+  width:min(170px,26vw);
   display:flex;flex-direction:column;align-items:center;
-  transform:translate(-50%,0) rotateY(var(--angle,0deg)) translateZ(var(--rayon,140px)) scale(var(--echelle,1));
-  will-change:transform,opacity;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
 .podium-scooter{
   position:relative;width:100%;height:min(190px,24vh);
@@ -514,12 +496,6 @@ body.allege .poussiere{display:none}
   text-shadow:0 0 8px rgba(95,212,255,.5);
   backdrop-filter:blur(4px);
   white-space:nowrap;
-  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-}
-.carte-scooter--face .plaque-nom{
-  transform:scale(1.14);
-  border-color:rgba(95,212,255,.75);
-  box-shadow:0 0 20px rgba(95,212,255,.4);
 }
 @media (max-width:700px){
   .scene-podium{bottom:19%}
@@ -723,11 +699,7 @@ body.allege .poussiere{display:none}
         <div class="eyebrow">2Temps Deals · Showroom</div>
         <h2>Bienvenue à l'intérieur</h2>
       </div>
-      <div class="scene-podium" id="scene-podium">
-        <div class="podium-base"></div>
-        <div class="podium-anneau-led"></div>
-        <div class="podium-ring" id="podium-ring"></div>
-      </div>
+      <div class="scene-podium" id="scene-podium"></div>
       <div class="intro-scene-cta">
         <svg class="fleche-glisse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         Glisse vers la droite pour explorer
@@ -866,20 +838,17 @@ function rendreCartes(liste, conteneurId){
 rendreCartes(PRODUITS_ARRIVAGES, "rangee-arrivages");
 rendreCartes(PRODUITS_MOTEURS, "rangee-moteurs");
 
-/* ═══ Podium tournant — scooters vendus ═══
-   Anneau 3D en rotation lente et continue ; ralentit (sans s'arrêter)
-   quand un scooter fait face à la caméra pour le laisser bien visible. */
-function initPodiumTournant(){
-  const anneau = $("#podium-ring");
-  if (!anneau || !SCOOTERS_VENDUS.length) return;
+/* ═══ Défilé des scooters vendus ═══
+   Bande horizontale où tous les scooters sont visibles en même temps,
+   qui défile doucement en continu (boucle infinie), et que l'utilisateur
+   peut aussi faire glisser manuellement à tout moment. */
+function initDefileScooters(){
+  const bande = $("#scene-podium");
+  if (!bande || !SCOOTERS_VENDUS.length) return;
 
-  const n = SCOOTERS_VENDUS.length;
-  const pasAngle = 360 / n;
-
-  SCOOTERS_VENDUS.forEach((s, i) => {
+  function creerCarte(s){
     const carte = document.createElement("div");
     carte.className = "carte-scooter";
-    carte.style.setProperty("--angle", (i * pasAngle) + "deg");
     carte.innerHTML = `
       <div class="podium-scooter">
         <div class="podium-halo"></div>
@@ -889,51 +858,27 @@ function initPodiumTournant(){
       </div>
       <div class="plaque-nom">${s.nom}</div>
     `;
-    anneau.appendChild(carte);
-  });
-
-  const cartes = Array.from(anneau.querySelectorAll(".carte-scooter"));
-
-  function calculerRayon(){
-    const largeur = cartes[0] ? cartes[0].offsetWidth : 150;
-    const rayon = (largeur / 2) / Math.tan(Math.PI / n) * 1.28;
-    return Math.max(rayon, largeur * 0.95);
-  }
-  function appliquerRayon(){
-    anneau.style.setProperty("--rayon", calculerRayon() + "px");
-  }
-  appliquerRayon();
-  window.addEventListener("resize", appliquerRayon);
-
-  /* Positionne/estompe une fois, sans animer, si mouvement réduit demandé */
-  function poserCartesStatique(){
-    cartes.forEach(c => {
-      const angleCarte = parseFloat(c.style.getPropertyValue("--angle"));
-      const effectif = ((angleCarte % 360) + 360) % 360;
-      const delta = effectif > 180 ? 360 - effectif : effectif;
-      const proximite = 1 - Math.min(delta / 90, 1);
-      c.style.opacity = (0.4 + 0.6 * proximite).toFixed(2);
-      c.style.setProperty("--echelle", (0.84 + 0.2 * proximite).toFixed(2));
-      c.classList.toggle("carte-scooter--face", delta < pasAngle / 2.2);
-    });
+    return carte;
   }
 
-  if (reduitMotion){
-    poserCartesStatique();
-    return;
-  }
+  /* La liste est dupliquée pour permettre une boucle de défilement sans coupure */
+  SCOOTERS_VENDUS.forEach(s => bande.appendChild(creerCarte(s)));
+  const nbCartes = SCOOTERS_VENDUS.length;
+  SCOOTERS_VENDUS.forEach(s => bande.appendChild(creerCarte(s)));
 
-  let rotation = 0;
+  /* Distance exacte entre le début du 1er jeu et le début du 2e (identique) */
+  function calculerLargeurUnSet(){
+    const premiereDupliquee = bande.children[nbCartes];
+    return premiereDupliquee ? premiereDupliquee.offsetLeft : bande.scrollWidth / 2;
+  }
+  let largeurUnSet = calculerLargeurUnSet();
+  window.addEventListener("resize", () => { largeurUnSet = calculerLargeurUnSet(); });
+
+  if (reduitMotion) return;
+
   let enPause = false;
   let dernierT = null;
-  const vitesseBase = 7; /* degrés / seconde en vitesse de croisière */
-
-  function easeProximite(delta){
-    const demiPas = pasAngle / 2;
-    const t = Math.min(delta / demiPas, 1);
-    const lisse = t * t * (3 - 2 * t); /* smoothstep */
-    return 0.12 + 0.88 * lisse;
-  }
+  const vitesse = 22; /* pixels / seconde */
 
   function image(temps){
     if (dernierT === null) dernierT = temps;
@@ -941,34 +886,24 @@ function initPodiumTournant(){
     dernierT = temps;
 
     if (!enPause){
-      const offset = ((rotation % pasAngle) + pasAngle) % pasAngle;
-      const delta = Math.min(offset, pasAngle - offset);
-      rotation = (rotation + vitesseBase * easeProximite(delta) * dt) % 360;
-      anneau.style.setProperty("--rotation", rotation + "deg");
+      bande.scrollLeft += vitesse * dt;
+      if (bande.scrollLeft >= largeurUnSet) bande.scrollLeft -= largeurUnSet;
     }
-
-    cartes.forEach(c => {
-      const angleCarte = parseFloat(c.style.getPropertyValue("--angle"));
-      let effectif = ((angleCarte + rotation) % 360 + 360) % 360;
-      if (effectif > 180) effectif -= 360;
-      const delta = Math.abs(effectif);
-      const proximite = 1 - Math.min(delta / 90, 1);
-      c.style.opacity = (0.4 + 0.6 * proximite).toFixed(2);
-      c.style.setProperty("--echelle", (0.84 + 0.2 * proximite).toFixed(2));
-      c.classList.toggle("carte-scooter--face", delta < pasAngle / 2.2);
-    });
-
     requestAnimationFrame(image);
   }
   requestAnimationFrame(image);
 
-  const scene = $("#scene-podium");
-  scene.addEventListener("pointerenter", () => { enPause = true; });
-  scene.addEventListener("pointerleave", () => { enPause = false; });
-  scene.addEventListener("touchstart", () => { enPause = true; }, { passive:true });
-  scene.addEventListener("touchend", () => { setTimeout(() => enPause = false, 1800); }, { passive:true });
+  bande.addEventListener("pointerenter", () => { enPause = true; });
+  bande.addEventListener("pointerleave", () => { enPause = false; });
+  bande.addEventListener("touchstart", () => { enPause = true; }, { passive:true });
+  bande.addEventListener("touchend", () => { setTimeout(() => enPause = false, 2200); }, { passive:true });
+  bande.addEventListener("scroll", () => {
+    if (!enPause) return; /* seulement pour un scroll manuel de l'utilisateur */
+    if (bande.scrollLeft >= largeurUnSet) bande.scrollLeft -= largeurUnSet;
+    else if (bande.scrollLeft < 0) bande.scrollLeft += largeurUnSet;
+  }, { passive:true });
 }
-initPodiumTournant();
+initDefileScooters();
 
 /* ═══ Fiche produit ═══ */
 function ouvrirFiche(p, zoneEl){
