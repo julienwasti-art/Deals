@@ -67,11 +67,58 @@ button{font-family:inherit;cursor:pointer}
   border-left:2px solid rgba(255,255,255,.04);
   border-right:2px solid rgba(255,255,255,.04);
   overflow:hidden;
+  transform:scale(1) translateY(0);
+  transition:transform 2.6s cubic-bezier(.5,0,.2,1) 1.2s, filter 2.6s ease 1.2s;
+  filter:brightness(1);
+}
+#intro.porte-ouverte .mur-facade{transform:scale(1.16) translateY(-1.5%);filter:brightness(1.12)}
+.pilier{
+  position:absolute;bottom:0;width:22px;height:100%;
+  background:linear-gradient(180deg,#141B24,#0A0F16);
+  box-shadow:inset -2px 0 6px rgba(0,0,0,.5);
+}
+.pilier.g{left:4%}
+.pilier.d{right:4%}
+.pilier::before{
+  content:"";position:absolute;top:6%;bottom:10%;left:50%;width:2px;transform:translateX(-50%);
+  background:rgba(95,212,255,.15);
+  box-shadow:0 0 0 rgba(95,212,255,0);
+  transition:box-shadow 1s ease, background 1s ease;
+}
+#intro.lumieres-on .pilier::before{
+  background:rgba(95,212,255,.8);
+  box-shadow:0 0 14px 2px rgba(95,212,255,.7);
+}
+.plaque-marque{
+  position:absolute;top:44%;left:50%;transform:translateX(-50%);
+  width:34px;height:34px;border-radius:50%;
+  border:1.5px solid rgba(95,212,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-weight:700;font-size:11px;color:var(--neon);
+  opacity:0;transition:opacity .8s ease 1s;
+}
+#intro.lumieres-on .plaque-marque{opacity:.8}
+.bande-danger{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(560px,72%);height:10px;
+  background:repeating-linear-gradient(135deg,#F4B400 0 14px,#161616 14px 28px);
+  opacity:.85;
 }
 .sol-reflet{
   position:absolute;left:0;right:0;bottom:0;height:120px;
   background:linear-gradient(180deg, rgba(95,212,255,.06), transparent);
   filter:blur(1px);
+}
+.brume{
+  position:absolute;bottom:-4%;border-radius:50%;
+  background:radial-gradient(circle, rgba(191,227,251,.22), transparent 70%);
+  filter:blur(6px);pointer-events:none;opacity:0;
+}
+#intro.porte-ouverte .brume{opacity:1;animation:monterBrume 5s ease-in infinite}
+@keyframes monterBrume{
+  0%{transform:translateY(0) scale(1);opacity:0}
+  15%{opacity:.7}
+  100%{transform:translateY(-220px) scale(1.6);opacity:0}
 }
 .enseigne{
   position:absolute;top:9%;left:50%;transform:translateX(-50%);
@@ -191,17 +238,34 @@ button{font-family:inherit;cursor:pointer}
     linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.35) 90%),
     repeating-linear-gradient(180deg, #171E27 0 4px, #12181F 4px 8px);
   border-top:3px solid #232D38;
-  box-shadow:0 -20px 50px rgba(0,0,0,.5) inset;
+  box-shadow:0 -20px 50px rgba(0,0,0,.5) inset, 0 -1px 18px 2px rgba(95,212,255,.35);
 }
 .sol{
   position:absolute;left:0;right:0;bottom:0;height:14%;
   background:linear-gradient(180deg,#0A0F16,#020407);
   border-top:1px solid rgba(255,255,255,.05);
 }
+.sol-lumiere{
+  position:absolute;left:50%;bottom:0;width:70%;height:100%;transform:translateX(-50%);
+  background:radial-gradient(ellipse 60% 100% at 50% 0%, rgba(95,212,255,.16), transparent 75%);
+  pointer-events:none;
+}
 .led-plafond{
   position:absolute;top:0;left:8%;right:8%;height:3px;
   background:linear-gradient(90deg,transparent,rgba(95,212,255,.9),transparent);
   box-shadow:0 0 24px 4px rgba(95,212,255,.5);
+}
+.cone-lumiere{
+  position:absolute;top:0;width:220px;height:60%;
+  background:linear-gradient(180deg, rgba(95,212,255,.16), transparent 85%);
+  clip-path:polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%);
+  pointer-events:none;opacity:.75;
+}
+.vignette{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(2,4,9,.65) 100%),
+    linear-gradient(180deg, rgba(2,4,9,.55), transparent 18%, transparent 78%, rgba(2,4,9,.6));
 }
 .poussiere{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);pointer-events:none;filter:blur(.5px)}
 @keyframes flotter{
@@ -213,9 +277,11 @@ button{font-family:inherit;cursor:pointer}
 body.allege .poussiere{display:none}
 @media (prefers-reduced-motion: reduce){
   .poussiere{display:none}
+  .brume{display:none}
   .badge-maquette .point{animation:none}
   .btn-entrer{animation:none}
   .enseigne .t1{animation:none}
+  .mur-facade{transition:none}
 }
 
 /* ── titre de zone ── */
@@ -231,7 +297,13 @@ body.allege .poussiere{display:none}
   font-size:clamp(24px,4.4vw,42px);font-weight:900;font-style:italic;text-transform:uppercase;
   color:var(--neon);
   text-shadow:0 0 10px rgba(95,212,255,.6), 0 0 30px rgba(95,212,255,.35);
+  animation:pulseTitre 3.6s ease infinite;
 }
+@keyframes pulseTitre{
+  0%,100%{text-shadow:0 0 10px rgba(95,212,255,.6), 0 0 30px rgba(95,212,255,.35)}
+  50%{text-shadow:0 0 14px rgba(95,212,255,.85), 0 0 42px rgba(95,212,255,.5)}
+}
+@media (prefers-reduced-motion: reduce){.zone-titre h2{animation:none}}
 
 /* ── entrée ── */
 .zone-entree .couche-mur{background:
@@ -245,6 +317,56 @@ body.allege .poussiere{display:none}
 }
 .silhouette-outil.roue1{width:120px;height:120px;left:8%}
 .silhouette-outil.roue2{width:90px;height:90px;left:14%;bottom:10%}
+
+/* ── décor : mur perforé + outils suspendus ── */
+.pegboard{
+  position:absolute;top:6%;left:0;right:0;height:26%;z-index:1;
+  background-image:radial-gradient(circle,rgba(255,255,255,.07) 1.5px,transparent 1.6px);
+  background-size:34px 34px;
+  opacity:.55;
+  -webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);
+  mask-image:linear-gradient(180deg,#000 60%,transparent);
+}
+.pegboard::before,.pegboard::after{
+  content:"";position:absolute;top:20%;width:64px;height:14px;
+  border:2px solid rgba(191,227,251,.3);border-radius:3px;
+  box-shadow:0 30px 0 -8px rgba(191,227,251,.18);
+}
+.pegboard::before{left:14%;transform:rotate(-8deg)}
+.pegboard::after{right:16%;width:44px;height:44px;border-radius:50%;top:14%}
+
+/* ── décor : pile de pneus ── */
+.pile-pneus{
+  position:absolute;bottom:6%;width:96px;height:56px;z-index:2;opacity:.9;
+}
+.pile-pneus::before,.pile-pneus::after{
+  content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:96px;height:28px;border-radius:50%;
+  background:repeating-conic-gradient(#0B0E12 0deg 8deg, #1B2027 8deg 16deg);
+  box-shadow:0 6px 14px rgba(0,0,0,.6), 0 0 0 4px #060809 inset;
+}
+.pile-pneus::before{bottom:16px}
+.pile-pneus::after{bottom:0}
+
+/* ── décor : silhouette scooter en fond ── */
+.scooter-silhouette{
+  position:absolute;bottom:14%;left:50%;transform:translateX(-50%);
+  width:min(420px,70vw);height:150px;z-index:1;opacity:.14;
+  background:var(--acier);
+  clip-path:polygon(2% 88%,6% 60%,16% 55%,22% 40%,40% 34%,46% 20%,66% 18%,72% 34%,86% 40%,96% 58%,98% 88%,88% 88%,84% 74%,64% 74%,60% 88%,34% 88%,30% 74%,14% 74%,10% 88%);
+  filter:blur(.5px);
+}
+
+/* ── décor : établi ── */
+.etabli-silhouette{
+  position:absolute;bottom:38%;left:6%;width:190px;height:10px;
+  background:#232D38;box-shadow:0 0 0 1px rgba(255,255,255,.05);
+}
+.etabli-silhouette::before,.etabli-silhouette::after{
+  content:"";position:absolute;top:10px;width:6px;height:60px;background:#1A222C;
+}
+.etabli-silhouette::before{left:8px}
+.etabli-silhouette::after{right:8px}
 .intro-scene-cta{
   position:absolute;bottom:14%;left:50%;transform:translateX(-50%);
   display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--acier);
@@ -261,24 +383,44 @@ body.allege .poussiere{display:none}
   padding:0 6vw;flex-wrap:wrap;
 }
 .carte-produit{
+  position:relative;
   width:min(220px,38vw);text-align:left;
   background:rgba(8,15,24,.55);backdrop-filter:blur(6px);
   border:1px solid rgba(95,212,255,.22);border-radius:14px;
   padding:10px;cursor:pointer;
   transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
   min-height:44px;
+  animation:respireCarte 4.5s ease infinite;
+  animation-delay:calc(var(--decalage, 0) * .4s);
 }
+@keyframes respireCarte{
+  0%,100%{box-shadow:0 0 0 1px rgba(95,212,255,.1), 0 10px 24px rgba(0,0,0,.4)}
+  50%{box-shadow:0 0 0 1px rgba(95,212,255,.28), 0 10px 30px rgba(95,212,255,.12)}
+}
+@media (prefers-reduced-motion: reduce){.carte-produit{animation:none}}
 .carte-produit:hover,.carte-produit:focus-visible{
   transform:translateY(-8px);
   border-color:var(--neon);
-  box-shadow:0 18px 40px rgba(95,212,255,.25);
+  box-shadow:0 18px 40px rgba(95,212,255,.3) !important;
 }
+.carte-produit::before,.carte-produit::after{
+  content:"";position:absolute;width:14px;height:14px;
+  border:2px solid rgba(95,212,255,.5);pointer-events:none;
+}
+.carte-produit::before{top:-1px;left:-1px;border-right:none;border-bottom:none;border-radius:6px 0 0 0}
+.carte-produit::after{bottom:-1px;right:-1px;border-left:none;border-top:none;border-radius:0 0 6px 0}
 .vitrine-photo{
   aspect-ratio:1/1;border-radius:10px;overflow:hidden;position:relative;
   background:radial-gradient(circle at 50% 35%, rgba(95,212,255,.18), #060A10 70%);
   box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;
 }
-.vitrine-photo img{width:100%;height:100%;object-fit:contain;padding:10px}
+.vitrine-photo::after{
+  content:"";position:absolute;left:50%;bottom:6%;transform:translateX(-50%);
+  width:70%;height:22%;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(95,212,255,.45), transparent 72%);
+  filter:blur(3px);
+}
+.vitrine-photo img{width:100%;height:100%;object-fit:contain;padding:10px;position:relative;z-index:1}
 .carte-produit .nom{
   font-weight:800;text-transform:uppercase;font-size:13px;margin-top:9px;color:#fff;
   font-variation-settings:'wdth' 84;
@@ -288,6 +430,9 @@ body.allege .poussiere{display:none}
 }
 .zone.zone-active .carte-produit{filter:brightness(1)}
 .zone.zone-highlight .couche-etageres{filter:brightness(1.25) saturate(1.1)}
+.zone-arrivages .vitrine-photo::after{background:radial-gradient(ellipse, rgba(255,201,120,.45), transparent 72%)}
+.zone-arrivages .carte-produit:hover,.zone-arrivages .carte-produit:focus-visible{border-color:var(--ambre);box-shadow:0 18px 40px rgba(255,201,120,.3) !important}
+.zone-arrivages .carte-produit::before,.zone-arrivages .carte-produit::after{border-color:rgba(255,201,120,.5)}
 
 /* ── fiche produit overlay ── */
 #fiche-overlay{
@@ -376,6 +521,8 @@ body.allege .poussiere{display:none}
   <button type="button" class="skip-intro" id="btn-skip">Passer l'intro</button>
   <div class="facade">
     <div class="mur-facade">
+      <div class="pilier g"><div class="plaque-marque">2T</div></div>
+      <div class="pilier d"><div class="plaque-marque">DL</div></div>
       <div class="projecteur g"></div>
       <div class="projecteur d"></div>
       <div class="enseigne">
@@ -386,6 +533,10 @@ body.allege .poussiere{display:none}
         <div class="lueur-interieure"></div>
         <div class="porte-metal"><div class="porte-rivets"></div></div>
       </div>
+      <div class="bande-danger"></div>
+      <div class="brume" style="left:30%;width:120px;height:60px;animation-delay:.2s"></div>
+      <div class="brume" style="left:48%;width:160px;height:70px;animation-delay:1.4s"></div>
+      <div class="brume" style="left:62%;width:110px;height:55px;animation-delay:2.6s"></div>
       <div class="sol-reflet"></div>
     </div>
   </div>
@@ -401,11 +552,18 @@ body.allege .poussiere{display:none}
     <!-- ZONE 0 : ENTRÉE -->
     <section class="zone zone-entree" data-nom="Entrée showroom">
       <div class="couche couche-mur" data-vitesse=".08"></div>
-      <div class="couche-etageres"></div>
-      <div class="sol"></div>
+      <div class="pegboard"></div>
+      <div class="scooter-silhouette"></div>
+      <div class="couche-etageres">
+        <div class="etabli-silhouette"></div>
+        <div class="pile-pneus" style="right:6%"></div>
+      </div>
+      <div class="sol"><div class="sol-lumiere"></div></div>
       <div class="led-plafond"></div>
+      <div class="cone-lumiere" style="left:50%;transform:translateX(-50%)"></div>
       <div class="silhouette-outil roue1"></div>
       <div class="silhouette-outil roue2"></div>
+      <div class="vignette"></div>
       <div class="zone-titre">
         <div class="eyebrow">2Temps Deals · Showroom</div>
         <h2>Bienvenue à l'intérieur</h2>
@@ -419,9 +577,13 @@ body.allege .poussiere{display:none}
     <!-- ZONE 1 : NOUVEAUX ARRIVAGES -->
     <section class="zone zone-arrivages" data-nom="Nouveaux arrivages">
       <div class="couche couche-mur" data-vitesse=".12" style="background:radial-gradient(700px 400px at 50% 15%, rgba(255,201,120,.10), transparent 60%), linear-gradient(180deg,#0D141D 0%,#080D14 55%,#05080D 100%)"></div>
-      <div class="couche-etageres"></div>
-      <div class="sol"></div>
+      <div class="pegboard"></div>
+      <div class="couche-etageres" style="box-shadow:0 -20px 50px rgba(0,0,0,.5) inset, 0 -1px 18px 2px rgba(255,201,120,.35)"></div>
+      <div class="sol"><div class="sol-lumiere" style="background:radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255,201,120,.18), transparent 75%)"></div></div>
       <div class="led-plafond" style="background:linear-gradient(90deg,transparent,rgba(255,201,120,.9),transparent);box-shadow:0 0 24px 4px rgba(255,201,120,.5)"></div>
+      <div class="cone-lumiere" style="left:32%;background:linear-gradient(180deg, rgba(255,201,120,.18), transparent 85%)"></div>
+      <div class="cone-lumiere" style="left:64%;background:linear-gradient(180deg, rgba(255,201,120,.18), transparent 85%)"></div>
+      <div class="vignette"></div>
       <div class="zone-titre">
         <div class="eyebrow">Zone 1</div>
         <h2 style="color:var(--ambre);text-shadow:0 0 10px rgba(255,201,120,.6),0 0 30px rgba(255,201,120,.3)">Nouveaux arrivages</h2>
@@ -432,9 +594,17 @@ body.allege .poussiere{display:none}
     <!-- ZONE 2 : MOTEURS -->
     <section class="zone zone-moteurs" data-nom="Moteurs">
       <div class="couche couche-mur" data-vitesse=".16"></div>
-      <div class="couche-etageres"></div>
-      <div class="sol"></div>
+      <div class="pegboard"></div>
+      <div class="couche-etageres">
+        <div class="pile-pneus" style="left:5%"></div>
+        <div class="pile-pneus" style="right:5%"></div>
+      </div>
+      <div class="sol"><div class="sol-lumiere"></div></div>
       <div class="led-plafond"></div>
+      <div class="cone-lumiere" style="left:22%"></div>
+      <div class="cone-lumiere" style="left:50%;transform:translateX(-50%)"></div>
+      <div class="cone-lumiere" style="right:22%;left:auto"></div>
+      <div class="vignette"></div>
       <div class="zone-titre">
         <div class="eyebrow">Zone 2</div>
         <h2>Moteurs</h2>
@@ -515,6 +685,7 @@ function rendreCartes(liste, conteneurId){
     const carte = document.createElement("button");
     carte.type = "button";
     carte.className = "carte-produit";
+    carte.style.setProperty("--decalage", i);
     carte.innerHTML = `
       <div class="vitrine-photo"><img src="${p.photo}" alt="${p.nom}" loading="lazy"></div>
       <div class="nom">${p.nom}</div>
