@@ -121,33 +121,81 @@ button{font-family:inherit;cursor:pointer}
   100%{transform:translateY(-220px) scale(1.6);opacity:0}
 }
 .enseigne{
-  position:absolute;top:9%;left:50%;transform:translateX(-50%);
-  text-align:center;opacity:0;transition:opacity .4s ease;
+  position:absolute;top:7%;left:50%;transform:translateX(-50%);
+  width:min(340px,50vw);
+  opacity:0;transition:opacity .5s ease;
+  z-index:2;
 }
 #intro.enseigne-on .enseigne{opacity:1}
-.enseigne .t1{
-  font-weight:900;font-style:italic;text-transform:uppercase;
-  font-size:clamp(30px,6vw,58px);letter-spacing:.02em;line-height:.95;
-  color:var(--neon);
-  text-shadow:
-    0 0 6px rgba(95,212,255,.9),
-    0 0 18px rgba(95,212,255,.7),
-    0 0 46px rgba(95,212,255,.45),
-    0 0 90px rgba(95,212,255,.25);
-  animation:flicker 3.4s linear infinite;
+.enseigne-halo{
+  position:absolute;top:50%;left:50%;
+  width:190%;height:190%;
+  transform:translate(-50%,-50%) scale(1);
+  background:radial-gradient(circle, rgba(95,212,255,.4) 0%, rgba(230,57,70,.16) 42%, transparent 70%);
+  filter:blur(20px);
+  pointer-events:none;
+  animation:haloPulse 3.6s ease infinite;
 }
-.enseigne .t2{
-  font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.5em;
-  font-size:clamp(11px,1.6vw,16px);color:var(--rouge);margin-top:2px;
-  text-shadow:0 0 10px rgba(230,57,70,.8), 0 0 26px rgba(230,57,70,.5);
+@keyframes haloPulse{
+  0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:.85;transform:translate(-50%,-50%) scale(1.07)}
 }
-@keyframes flicker{
-  0%,3%,6%,100%{opacity:1}
-  4%{opacity:.4}
-  5%{opacity:.85}
-  62%{opacity:1}
-  63%{opacity:.5}
-  64%{opacity:1}
+.enseigne-support{
+  position:relative;padding:12px;border-radius:12px;
+  background:linear-gradient(160deg,#111820,#080B10);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05) inset,
+    0 22px 42px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.05);
+  transform:perspective(1000px) rotateX(6deg);
+  transform-origin:50% 100%;
+}
+.enseigne-logo{
+  display:block;width:100%;height:auto;
+  filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 16px rgba(95,212,255,.55))
+    drop-shadow(0 0 32px rgba(230,57,70,.3))
+    brightness(1);
+  animation:flickerLogo 3.4s linear infinite;
+}
+@keyframes flickerLogo{
+  0%,3%,6%,100%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 16px rgba(95,212,255,.55))
+    drop-shadow(0 0 32px rgba(230,57,70,.3))
+    brightness(1)}
+  4%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 8px rgba(95,212,255,.3))
+    drop-shadow(0 0 16px rgba(230,57,70,.15))
+    brightness(.5)}
+  5%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 12px rgba(95,212,255,.45))
+    drop-shadow(0 0 24px rgba(230,57,70,.24))
+    brightness(.82)}
+  62%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 16px rgba(95,212,255,.55))
+    drop-shadow(0 0 32px rgba(230,57,70,.3))
+    brightness(1)}
+  63%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 9px rgba(95,212,255,.32))
+    drop-shadow(0 0 18px rgba(230,57,70,.16))
+    brightness(.6)}
+  64%{filter:
+    drop-shadow(0 16px 22px rgba(0,0,0,.55))
+    drop-shadow(0 0 16px rgba(95,212,255,.55))
+    drop-shadow(0 0 32px rgba(230,57,70,.3))
+    brightness(1)}
+}
+.ombre-enseigne{
+  position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);
+  width:78%;height:26px;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(0,0,0,.55), transparent 75%);
+  filter:blur(4px);
 }
 .projecteur{
   position:absolute;width:340px;height:340px;border-radius:50%;
@@ -280,7 +328,8 @@ body.allege .poussiere{display:none}
   .brume{display:none}
   .badge-maquette .point{animation:none}
   .btn-entrer{animation:none}
-  .enseigne .t1{animation:none}
+  .enseigne-logo{animation:none}
+  .enseigne-halo{animation:none}
   .mur-facade{transition:none}
 }
 
@@ -526,8 +575,11 @@ body.allege .poussiere{display:none}
       <div class="projecteur g"></div>
       <div class="projecteur d"></div>
       <div class="enseigne">
-        <div class="t1">2Temps Deals</div>
-        <div class="t2 mono">Pièces scooter 2 temps</div>
+        <div class="enseigne-halo"></div>
+        <div class="enseigne-support">
+          <img class="enseigne-logo" src="https://i.postimg.cc/dQ8ZqFt4/IMG-48223E12-E476-46EA-AB59-A47CB6414886.jpg" alt="2Temps Deals">
+        </div>
+        <div class="ombre-enseigne"></div>
       </div>
       <div class="porte-cadre">
         <div class="lueur-interieure"></div>
