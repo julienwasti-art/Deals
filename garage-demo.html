@@ -457,16 +457,25 @@ body.allege .poussiere{display:none}
 }
 .photo-scooter{
   position:relative;z-index:2;
-  max-width:90%;max-height:80%;object-fit:contain;
+  max-width:88%;max-height:78%;object-fit:contain;
+  -webkit-mask-image:radial-gradient(ellipse 66% 80% at 50% 52%, #000 62%, transparent 100%);
+  mask-image:radial-gradient(ellipse 66% 80% at 50% 52%, #000 62%, transparent 100%);
   filter:
     drop-shadow(0 16px 12px rgba(0,0,0,.5))
     drop-shadow(0 0 18px rgba(95,212,255,.25));
+  -webkit-box-reflect:below 3px linear-gradient(transparent, transparent 55%, rgba(191,227,251,.14));
+}
+.photo-scooter.fond-blanc{
+  mix-blend-mode:multiply;
+  filter:
+    drop-shadow(0 0 16px rgba(95,212,255,.2))
+    contrast(1.06) saturate(1.08);
 }
 .podium-plateforme{
   position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
-  width:86%;height:14px;border-radius:50%;z-index:1;
-  background:radial-gradient(ellipse, rgba(95,212,255,.4), rgba(8,15,24,.05) 72%);
-  box-shadow:0 0 0 1px rgba(95,212,255,.28) inset, 0 4px 20px rgba(95,212,255,.32);
+  width:82%;height:20px;border-radius:50%;z-index:1;
+  background:radial-gradient(ellipse, rgba(95,212,255,.5), rgba(8,15,24,.05) 72%);
+  box-shadow:0 0 0 1px rgba(95,212,255,.32) inset, 0 6px 26px rgba(95,212,255,.4);
 }
 .plaque-nom{
   margin-top:12px;padding:6px 20px;border-radius:999px;
@@ -784,9 +793,9 @@ const PRODUITS_MOTEURS = [
 
 /* Scooters complets déjà vendus — vitrine de la zone Entrée */
 const SCOOTERS_VENDUS = [
-  { nom:"MBK Nitro", photo:"https://i.postimg.cc/tJ0HDKFt/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg" },
-  { nom:"MBK Booster Spirit", photo:"https://i.postimg.cc/PJGkKg1M/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg" },
-  { nom:"Scooter vendu", photo:"https://i.postimg.cc/D0q3NxcD/IMG-0106.jpg" }
+  { nom:"MBK Nitro", photo:"https://i.postimg.cc/tJ0HDKFt/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg", fondBlanc:true },
+  { nom:"MBK Booster Spirit", photo:"https://i.postimg.cc/PJGkKg1M/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg", fondBlanc:true },
+  { nom:"Honda Camino", photo:"https://i.postimg.cc/D0q3NxcD/IMG-0106.jpg", fondBlanc:false }
 ];
 
 const $ = s => document.querySelector(s);
@@ -825,7 +834,7 @@ function rendreScootersVendus(){
       <div class="podium-scooter">
         <div class="podium-halo"></div>
         <div class="podium-spot"></div>
-        <img class="photo-scooter" src="${s.photo}" alt="${s.nom}" loading="lazy">
+        <img class="photo-scooter${s.fondBlanc ? " fond-blanc" : ""}" src="${s.photo}" alt="${s.nom}" loading="lazy">
         <div class="podium-plateforme"></div>
       </div>
       <div class="plaque-nom">${s.nom}</div>
