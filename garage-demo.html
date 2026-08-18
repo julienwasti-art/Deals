@@ -98,6 +98,22 @@ button{font-family:inherit;cursor:pointer}
   opacity:0;transition:opacity .8s ease 1s;
 }
 #intro.lumieres-on .plaque-marque{opacity:.8}
+.affiche-intro{
+  position:absolute;bottom:10%;width:min(190px,19%);height:50%;
+  border-radius:8px;overflow:hidden;
+  border:2px solid rgba(95,212,255,.22);
+  box-shadow:0 0 0 rgba(95,212,255,0), 0 12px 30px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(16px);
+  transition:opacity 1.1s ease 1.5s, transform 1.1s ease 1.5s, box-shadow 1.1s ease 1.5s;
+}
+.affiche-intro.g{left:9%}
+.affiche-intro.d{right:9%}
+.affiche-intro img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.9) contrast(1.05)}
+#intro.lumieres-on .affiche-intro{
+  opacity:1;transform:translateY(0);
+  box-shadow:0 0 26px rgba(95,212,255,.28), 0 12px 30px rgba(0,0,0,.6);
+}
+@media (max-width:760px){.affiche-intro{display:none}}
 .bande-danger{
   position:absolute;left:50%;bottom:0;transform:translateX(-50%);
   width:min(560px,72%);height:10px;
@@ -650,6 +666,8 @@ body.allege .poussiere{display:none}
     <div class="mur-facade">
       <div class="pilier g"><div class="plaque-marque">2T</div></div>
       <div class="pilier d"><div class="plaque-marque">DL</div></div>
+      <div class="affiche-intro g"><img src="./images/intro/affiche-gauche.jpeg" alt="Quad customisé"></div>
+      <div class="affiche-intro d"><img src="./images/intro/affiche-droite.jpeg" alt="Honda CR motocross"></div>
       <div class="projecteur g"></div>
       <div class="projecteur d"></div>
       <div class="enseigne">
