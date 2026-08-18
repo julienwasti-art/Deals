@@ -860,23 +860,14 @@ function initDefileScooters(){
     return carte;
   }
 
-  /* La liste est dupliquée pour permettre une boucle de défilement sans coupure */
+  /* Chaque scooter n'apparaît qu'une seule fois, pas de doublon */
   SCOOTERS_VENDUS.forEach(s => bande.appendChild(creerCarte(s)));
-  const nbCartes = SCOOTERS_VENDUS.length;
-  SCOOTERS_VENDUS.forEach(s => bande.appendChild(creerCarte(s)));
-
-  /* Distance exacte entre le début du 1er jeu et le début du 2e (identique) */
-  function calculerLargeurUnSet(){
-    const premiereDupliquee = bande.children[nbCartes];
-    return premiereDupliquee ? premiereDupliquee.offsetLeft : bande.scrollWidth / 2;
-  }
-  let largeurUnSet = calculerLargeurUnSet();
-  window.addEventListener("resize", () => { largeurUnSet = calculerLargeurUnSet(); });
 
   if (reduitMotion) return;
 
   let enPause = false;
   let dernierT = null;
+  let sens = 1; /* 1 = vers la droite, -1 = vers la gauche */
   const vitesse = 22; /* pixels / seconde */
 
   function image(temps){
@@ -885,8 +876,12 @@ function initDefileScooters(){
     dernierT = temps;
 
     if (!enPause){
-      bande.scrollLeft += vitesse * dt;
-      if (bande.scrollLeft >= largeurUnSet) bande.scrollLeft -= largeurUnSet;
+      const maxScroll = bande.scrollWidth - bande.clientWidth;
+      if (maxScroll > 0){
+        bande.scrollLeft += sens * vitesse * dt;
+        if (bande.scrollLeft >= maxScroll){ bande.scrollLeft = maxScroll; sens = -1; }
+        else if (bande.scrollLeft <= 0){ bande.scrollLeft = 0; sens = 1; }
+      }
     }
     requestAnimationFrame(image);
   }
@@ -896,11 +891,6 @@ function initDefileScooters(){
   bande.addEventListener("pointerleave", () => { enPause = false; });
   bande.addEventListener("touchstart", () => { enPause = true; }, { passive:true });
   bande.addEventListener("touchend", () => { setTimeout(() => enPause = false, 2200); }, { passive:true });
-  bande.addEventListener("scroll", () => {
-    if (!enPause) return; /* seulement pour un scroll manuel de l'utilisateur */
-    if (bande.scrollLeft >= largeurUnSet) bande.scrollLeft -= largeurUnSet;
-    else if (bande.scrollLeft < 0) bande.scrollLeft += largeurUnSet;
-  }, { passive:true });
 }
 initDefileScooters();
 
