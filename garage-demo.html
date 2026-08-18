@@ -330,6 +330,7 @@ body.allege .poussiere{display:none}
   .btn-entrer{animation:none}
   .enseigne-logo{animation:none}
   .enseigne-halo{animation:none}
+  .podium-halo{animation:none}
   .mur-facade{transition:none}
 }
 
@@ -425,38 +426,60 @@ body.allege .poussiere{display:none}
 .fleche-glisse{width:34px;height:34px;animation:glisse 1.6s ease infinite}
 @keyframes glisse{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(10px);opacity:1}}
 
-/* ── vitrine scooters vendus (zone entrée) ── */
+/* ── présentoir scooters (zone entrée) ── */
 .vitrine-scooters{
-  position:absolute;left:0;right:0;bottom:23%;z-index:4;
+  position:absolute;left:0;right:0;bottom:24%;z-index:4;
   display:flex;justify-content:center;align-items:flex-end;
-  gap:clamp(14px,3vw,30px);
+  gap:clamp(18px,4vw,50px);
   padding:0 6vw;flex-wrap:wrap;
 }
 .carte-scooter{
-  width:min(220px,38vw);
-  background:rgba(8,15,24,.5);backdrop-filter:blur(6px);
-  border:1px solid rgba(95,212,255,.2);border-radius:14px;
-  padding:8px;
-  box-shadow:0 14px 30px rgba(0,0,0,.45);
+  width:min(230px,40vw);
+  display:flex;flex-direction:column;align-items:center;
+}
+.podium-scooter{
+  position:relative;width:100%;height:min(210px,26vh);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.podium-halo{
+  position:absolute;top:2%;left:50%;transform:translateX(-50%);
+  width:135%;height:88%;
+  background:radial-gradient(ellipse, rgba(95,212,255,.3), transparent 70%);
+  filter:blur(16px);pointer-events:none;
+  animation:haloPulse 4.2s ease infinite;
+}
+.podium-spot{
+  position:absolute;top:-8%;left:50%;transform:translateX(-50%);
+  width:160px;height:105%;
+  background:linear-gradient(180deg, rgba(255,255,255,.16), transparent 82%);
+  clip-path:polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
+  pointer-events:none;
 }
 .photo-scooter{
-  position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;
-  background:radial-gradient(circle at 50% 35%, rgba(95,212,255,.15), #060A10 70%);
+  position:relative;z-index:2;
+  max-width:90%;max-height:80%;object-fit:contain;
+  filter:
+    drop-shadow(0 16px 12px rgba(0,0,0,.5))
+    drop-shadow(0 0 18px rgba(95,212,255,.25));
 }
-.photo-scooter img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.9)}
-.tampon-vendu{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-9deg);
-  background:var(--rouge);color:#fff;font-weight:900;text-transform:uppercase;
-  font-size:13px;letter-spacing:.1em;padding:5px 16px;border:2px solid #fff;border-radius:5px;
-  box-shadow:0 8px 20px rgba(0,0,0,.55);
-  font-family:'Archivo',sans-serif;
+.podium-plateforme{
+  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  width:86%;height:14px;border-radius:50%;z-index:1;
+  background:radial-gradient(ellipse, rgba(95,212,255,.4), rgba(8,15,24,.05) 72%);
+  box-shadow:0 0 0 1px rgba(95,212,255,.28) inset, 0 4px 20px rgba(95,212,255,.32);
 }
-.nom-scooter{
-  margin-top:9px;font-weight:800;text-transform:uppercase;font-size:12px;color:#fff;
-  text-align:center;font-variation-settings:'wdth' 84;
+.plaque-nom{
+  margin-top:12px;padding:6px 20px;border-radius:999px;
+  background:rgba(8,15,24,.6);border:1px solid rgba(95,212,255,.3);
+  font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--neon);
+  text-shadow:0 0 8px rgba(95,212,255,.5);
+  backdrop-filter:blur(4px);
+  white-space:nowrap;
 }
 @media (max-width:700px){
-  .vitrine-scooters{bottom:20%}
+  .vitrine-scooters{bottom:21%}
+  .podium-scooter{height:min(170px,24vh)}
 }
 
 /* ── produits sur étagère ── */
@@ -799,11 +822,13 @@ function rendreScootersVendus(){
     const carte = document.createElement("div");
     carte.className = "carte-scooter";
     carte.innerHTML = `
-      <div class="photo-scooter">
-        <img src="${s.photo}" alt="${s.nom}" loading="lazy">
-        <span class="tampon-vendu">Vendu</span>
+      <div class="podium-scooter">
+        <div class="podium-halo"></div>
+        <div class="podium-spot"></div>
+        <img class="photo-scooter" src="${s.photo}" alt="${s.nom}" loading="lazy">
+        <div class="podium-plateforme"></div>
       </div>
-      <div class="nom-scooter">${s.nom}</div>
+      <div class="plaque-nom">${s.nom}</div>
     `;
     zone.appendChild(carte);
   });
