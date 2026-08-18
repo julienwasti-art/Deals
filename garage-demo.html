@@ -425,6 +425,40 @@ body.allege .poussiere{display:none}
 .fleche-glisse{width:34px;height:34px;animation:glisse 1.6s ease infinite}
 @keyframes glisse{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(10px);opacity:1}}
 
+/* ── vitrine scooters vendus (zone entrée) ── */
+.vitrine-scooters{
+  position:absolute;left:0;right:0;bottom:23%;z-index:4;
+  display:flex;justify-content:center;align-items:flex-end;
+  gap:clamp(14px,3vw,30px);
+  padding:0 6vw;flex-wrap:wrap;
+}
+.carte-scooter{
+  width:min(220px,38vw);
+  background:rgba(8,15,24,.5);backdrop-filter:blur(6px);
+  border:1px solid rgba(95,212,255,.2);border-radius:14px;
+  padding:8px;
+  box-shadow:0 14px 30px rgba(0,0,0,.45);
+}
+.photo-scooter{
+  position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;
+  background:radial-gradient(circle at 50% 35%, rgba(95,212,255,.15), #060A10 70%);
+}
+.photo-scooter img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.9)}
+.tampon-vendu{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-9deg);
+  background:var(--rouge);color:#fff;font-weight:900;text-transform:uppercase;
+  font-size:13px;letter-spacing:.1em;padding:5px 16px;border:2px solid #fff;border-radius:5px;
+  box-shadow:0 8px 20px rgba(0,0,0,.55);
+  font-family:'Archivo',sans-serif;
+}
+.nom-scooter{
+  margin-top:9px;font-weight:800;text-transform:uppercase;font-size:12px;color:#fff;
+  text-align:center;font-variation-settings:'wdth' 84;
+}
+@media (max-width:700px){
+  .vitrine-scooters{bottom:20%}
+}
+
 /* ── produits sur étagère ── */
 .rangee-produits{
   position:absolute;left:0;right:0;bottom:8%;z-index:4;
@@ -620,6 +654,7 @@ body.allege .poussiere{display:none}
         <div class="eyebrow">2Temps Deals · Showroom</div>
         <h2>Bienvenue à l'intérieur</h2>
       </div>
+      <div class="vitrine-scooters" id="vitrine-scooters"></div>
       <div class="intro-scene-cta">
         <svg class="fleche-glisse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         Glisse vers la droite pour explorer
@@ -724,6 +759,13 @@ const PRODUITS_MOTEURS = [
     description:"Carburateur 21mm, révisé, prêt à l'installation." }
 ];
 
+/* Scooters complets déjà vendus — vitrine de la zone Entrée */
+const SCOOTERS_VENDUS = [
+  { nom:"MBK Nitro", photo:"https://i.postimg.cc/tJ0HDKFt/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg" },
+  { nom:"MBK Booster Spirit", photo:"https://i.postimg.cc/PJGkKg1M/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg" },
+  { nom:"Scooter vendu", photo:"https://i.postimg.cc/D0q3NxcD/IMG-0106.jpg" }
+];
+
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const reduitMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -749,6 +791,24 @@ function rendreCartes(liste, conteneurId){
 }
 rendreCartes(PRODUITS_ARRIVAGES, "rangee-arrivages");
 rendreCartes(PRODUITS_MOTEURS, "rangee-moteurs");
+
+/* ═══ Vitrine des scooters vendus ═══ */
+function rendreScootersVendus(){
+  const zone = $("#vitrine-scooters");
+  SCOOTERS_VENDUS.forEach(s => {
+    const carte = document.createElement("div");
+    carte.className = "carte-scooter";
+    carte.innerHTML = `
+      <div class="photo-scooter">
+        <img src="${s.photo}" alt="${s.nom}" loading="lazy">
+        <span class="tampon-vendu">Vendu</span>
+      </div>
+      <div class="nom-scooter">${s.nom}</div>
+    `;
+    zone.appendChild(carte);
+  });
+}
+rendreScootersVendus();
 
 /* ═══ Fiche produit ═══ */
 function ouvrirFiche(p, zoneEl){
