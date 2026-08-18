@@ -426,15 +426,24 @@ body.allege .poussiere{display:none}
 .fleche-glisse{width:34px;height:34px;animation:glisse 1.6s ease infinite}
 @keyframes glisse{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(10px);opacity:1}}
 
-/* ── présentoir scooters (zone entrée) ── */
+/* ── présentoir scooters (zone entrée) — étagère défilable ── */
 .vitrine-scooters{
   position:absolute;left:0;right:0;bottom:24%;z-index:4;
-  display:flex;justify-content:center;align-items:flex-end;
-  gap:clamp(18px,4vw,50px);
-  padding:0 6vw;flex-wrap:wrap;
+  display:flex;align-items:flex-end;
+  gap:clamp(18px,4vw,44px);
+  padding:0 8vw;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x;
+  scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
 }
+.vitrine-scooters::-webkit-scrollbar{display:none}
 .carte-scooter{
-  width:min(230px,40vw);
+  flex:0 0 auto;scroll-snap-align:center;
+  width:min(200px,34vw);
   display:flex;flex-direction:column;align-items:center;
 }
 .podium-scooter{
@@ -795,7 +804,12 @@ const PRODUITS_MOTEURS = [
 const SCOOTERS_VENDUS = [
   { nom:"MBK Nitro", photo:"https://i.postimg.cc/tJ0HDKFt/att-q-Jv-TYJ4Ew-FAJVZBs-JNiz-N4j0m-GTf-B1D92-No-Sz-AK-w.jpg", fondBlanc:true },
   { nom:"MBK Booster Spirit", photo:"https://i.postimg.cc/PJGkKg1M/att-w-SMzp-X9HEZ01LLKt-zm9Pm-M1UZDWMd-S-QW-4Haa5CY.jpg", fondBlanc:true },
-  { nom:"Honda Camino", photo:"https://i.postimg.cc/D0q3NxcD/IMG-0106.jpg", fondBlanc:false }
+  { nom:"Honda Camino", photo:"https://i.postimg.cc/D0q3NxcD/IMG-0106.jpg", fondBlanc:false },
+  { nom:"MBK Booster Phase 2", photo:"https://i.postimg.cc/PpsqbNMs/att-1Ic59Xj7Nrxzma-UXe7Wo2f-TGWF1ipfz-W5q-GJ9n-Yg4Hs.jpg", fondBlanc:false },
+  { nom:"MBK Booster Phase 2", photo:"https://i.postimg.cc/DJkzQmcF/att-tw-Uc-MRSMx0sd-Tu-ZLx2Ne-VFcg-BSPft-OYz-SYvi-Bs6E2g.jpg", fondBlanc:false },
+  { nom:"MBK Booster Phase 2", photo:"https://i.postimg.cc/fkQC2NWk/IMG-0078.jpg", fondBlanc:false },
+  { nom:"Yamaha Nitro", photo:"https://i.postimg.cc/5jWg7V9d/IMG-0526.jpg", fondBlanc:false },
+  { nom:"Honda Camino", photo:"https://i.postimg.cc/RqxdsBSk/IMG-0678.jpg", fondBlanc:false }
 ];
 
 const $ = s => document.querySelector(s);
