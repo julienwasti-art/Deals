@@ -353,15 +353,17 @@ body.allege .poussiere{display:none}
 
 /* ── titre de zone ── */
 .zone-titre{
-  position:absolute;top:9%;left:50%;transform:translateX(-50%);
-  text-align:center;z-index:3;
+  position:absolute;top:3%;left:50%;transform:translateX(-50%);
+  text-align:center;z-index:5;
+  background:rgba(4,8,15,.55);backdrop-filter:blur(6px);
+  padding:8px 22px;border-radius:12px;
 }
 .zone-titre .eyebrow{
   font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;
   text-transform:uppercase;color:var(--rouge);margin-bottom:6px;
 }
 .zone-titre h2{
-  font-size:clamp(24px,4.4vw,42px);font-weight:900;font-style:italic;text-transform:uppercase;
+  font-size:clamp(19px,3.2vw,32px);font-weight:900;font-style:italic;text-transform:uppercase;
   color:var(--neon);
   text-shadow:0 0 10px rgba(95,212,255,.6), 0 0 30px rgba(95,212,255,.35);
   animation:pulseTitre 3.6s ease infinite;
@@ -522,13 +524,14 @@ body.allege .poussiere{display:none}
 
 /* ── produits sur étagère ── */
 .rangee-produits{
-  position:absolute;left:0;right:0;bottom:8%;z-index:4;
-  display:flex;justify-content:center;gap:clamp(16px,4vw,44px);
-  padding:0 6vw;flex-wrap:wrap;
+  position:absolute;left:0;right:0;bottom:6%;top:16%;z-index:4;
+  display:flex;justify-content:center;align-content:flex-end;
+  gap:clamp(8px,1.8vw,18px);
+  padding:0 5vw;flex-wrap:wrap;overflow-y:auto;
 }
 .carte-produit{
   position:relative;
-  width:min(220px,38vw);text-align:left;
+  width:min(130px,23vw);text-align:left;
   background:rgba(8,15,24,.55);backdrop-filter:blur(6px);
   border:1px solid rgba(95,212,255,.22);border-radius:14px;
   padding:10px;cursor:pointer;
