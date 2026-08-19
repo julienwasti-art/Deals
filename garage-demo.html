@@ -803,24 +803,36 @@ const CONFIG = {
 };
 
 /* Vraies pièces du catalogue — sous-ensemble pour cette maquette */
+/* Catalogue complet repris tel quel du site principal (index.html),
+   hors "Scooter complet" (vitrine séparée) et hors pièces vendues ou
+   sans photo. Transfert non définitif — maquette encore en construction. */
 const PRODUITS_ARRIVAGES = [
+  { nom:"Boîte à clapet", prix:10, etat:"Occasion", modele:"MBK Booster", compatible:"Booster 2004+",
+    photo:"https://i.postimg.cc/L4T0jLW1/4396FF43-0F8C-4CA1-8896-AF7291C0C926.png",
+    description:"Booster 2004+" },
   { nom:"Selle Nitro", prix:35, etat:"Occasion", modele:"Yamaha Nitro", compatible:"Nitro / Aerox",
     photo:"https://i.postimg.cc/d3pH9CMY/att-s-XUTVussl-Lh-Oqw9u-2la-WCs-Phe-V53gz-CP0UNPOT8Cw.jpg",
-    description:"Selle d'origine en bon état, housse sans déchirure." },
+    description:"Nitro / Aerox" },
+  { nom:"Selle Booster", prix:40, etat:"Occasion", modele:"MBK Booster", compatible:"Booster 2004+",
+    photo:"https://i.postimg.cc/zBnKQRR3/att-k-Mz0xz6cgghd-OIVayjx-Dodbx-TB5MHMVyl-Ase-Ks8YOE.jpg",
+    description:"Booster 2004+" },
   { nom:"Compteur", prix:80, etat:"Occasion", modele:"Yamaha Nitro", compatible:"Yamaha Nitro",
     photo:"https://i.postimg.cc/8PY3hZqb/1D38D209-F2A1-4338-9F69-F4529A89F8BA.jpg",
-    description:"Compteur complet, cadran lisible, fonctionnement testé." }
+    description:"Yamaha Nitro" },
+  { nom:"Câble frein", prix:10, etat:"Neuf", modele:"MBK Booster", compatible:"Booster",
+    photo:"https://i.postimg.cc/L8n4ZzHf/IMG-1205.jpg",
+    description:"Booster" },
+  { nom:"Faisceau électrique complet", prix:50, etat:"Occasion", modele:"MBK Booster", compatible:"Booster",
+    photo:"https://i.postimg.cc/1zCPGWz0/att-KOb6b2tp-D6Fn-Y6mq2JRx-Iw3Ettc-UJWFKj-MDQhhdlaao.jpg",
+    description:"Booster" }
 ];
 const PRODUITS_MOTEURS = [
   { nom:"Transmission", prix:40, etat:"Occasion", modele:"MBK Booster", compatible:"MBK Booster",
     photo:"https://i.postimg.cc/kMxTqK9d/9E778C9E-DD18-4E16-BE45-40E63313A230.png",
-    description:"Kit transmission complet, prêt à monter." },
-  { nom:"Boîte à clapet", prix:10, etat:"Occasion", modele:"MBK Booster", compatible:"Booster 2004+",
-    photo:"https://i.postimg.cc/L4T0jLW1/4396FF43-0F8C-4CA1-8896-AF7291C0C926.png",
-    description:"Boîte à clapet fonctionnelle, clapets en bon état." },
+    description:"MBK Booster" },
   { nom:"Carbu 21 Motorforce", prix:50, etat:"Occasion", modele:"Universel", compatible:"Universel",
     photo:"https://i.postimg.cc/J4b4SVxz/att-RRLf8Jzdq1dl-RM-Cl4oz30x-Y3Gusrj-W3Bp-Zlgb-Mp93A.jpg",
-    description:"Carburateur 21mm, révisé, prêt à l'installation." }
+    description:"Universel" }
 ];
 
 /* Scooters complets déjà vendus — vitrine de la zone Entrée */
