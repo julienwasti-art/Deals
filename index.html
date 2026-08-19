@@ -572,6 +572,24 @@ body.allege .poussiere{display:none}
 .carte-produit .prix{
   font-family:'Space Mono',monospace;font-weight:700;color:var(--ambre);font-size:15px;margin-top:3px;
 }
+.zone-clic{
+  display:block;width:100%;text-align:left;background:none;border:none;padding:0;
+  cursor:pointer;font:inherit;color:inherit;
+}
+.bulle-achat{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin-top:9px;padding:7px 14px;border-radius:999px;
+  background:rgba(95,212,255,.14);border:1px solid rgba(95,212,255,.4);
+  font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--neon);text-decoration:none;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.bulle-achat:hover,.bulle-achat:focus-visible{
+  background:rgba(95,212,255,.28);border-color:var(--neon);transform:translateY(-2px);
+}
+.bulle-achat svg{flex:0 0 auto}
+.zone-arrivages .bulle-achat{background:rgba(255,201,120,.14);border-color:rgba(255,201,120,.4);color:var(--ambre)}
+.zone-arrivages .bulle-achat:hover,.zone-arrivages .bulle-achat:focus-visible{background:rgba(255,201,120,.28);border-color:var(--ambre)}
 .zone.zone-active .carte-produit{filter:brightness(1)}
 .zone.zone-highlight .couche-etageres{filter:brightness(1.25) saturate(1.1)}
 .zone-arrivages .vitrine-photo::after{background:radial-gradient(ellipse, rgba(255,201,120,.45), transparent 72%)}
@@ -847,16 +865,21 @@ if (appareilLeger) document.body.classList.add("allege");
 function rendreCartes(liste, conteneurId){
   const zone = $("#" + conteneurId);
   liste.forEach((p, i) => {
-    const carte = document.createElement("button");
-    carte.type = "button";
+    const carte = document.createElement("div");
     carte.className = "carte-produit";
     carte.style.setProperty("--decalage", i);
     carte.innerHTML = `
-      <div class="vitrine-photo"><img src="${p.photo}" alt="${p.nom}" loading="lazy"></div>
-      <div class="nom">${p.nom}</div>
-      <div class="prix mono">${p.prix} €</div>
+      <button type="button" class="zone-clic">
+        <div class="vitrine-photo"><img src="${p.photo}" alt="${p.nom}" loading="lazy"></div>
+        <div class="nom">${p.nom}</div>
+        <div class="prix mono">${p.prix} €</div>
+      </button>
+      <a class="bulle-achat" href="${CONFIG.facebook}" target="_blank" rel="noopener" aria-label="Acheter ${p.nom} sur Facebook">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.5H7.6V13h2.7v8h3.2z"/></svg>
+        Acheter
+      </a>
     `;
-    carte.addEventListener("click", () => ouvrirFiche(p, carte.closest(".zone")));
+    carte.querySelector(".zone-clic").addEventListener("click", () => ouvrirFiche(p, carte.closest(".zone")));
     zone.appendChild(carte);
   });
 }
