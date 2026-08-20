@@ -608,6 +608,15 @@ body.allege .poussiere{display:none}
 .bulle-achat svg{flex:0 0 auto}
 .zone-arrivages .bulle-achat{background:rgba(255,201,120,.14);border-color:rgba(255,201,120,.4);color:var(--ambre)}
 .zone-arrivages .bulle-achat:hover,.zone-arrivages .bulle-achat:focus-visible{background:rgba(255,201,120,.28);border-color:var(--ambre)}
+.moto-decor{
+  position:absolute;left:2%;bottom:4%;top:16%;
+  height:78%;width:auto;max-width:42%;
+  object-fit:contain;object-position:left bottom;
+  opacity:.8;z-index:3;pointer-events:none;
+  filter:drop-shadow(0 20px 26px rgba(0,0,0,.55));
+}
+.zone-arrivages .rangee-produits{left:auto;right:4%;transform:none}
+@media (max-width:900px){.moto-decor{display:none}}
 .zone.zone-active .carte-produit{filter:brightness(1)}
 .zone.zone-highlight .couche-etageres{filter:brightness(1.25) saturate(1.1)}
 .zone-arrivages .vitrine-photo::after{background:radial-gradient(ellipse, rgba(255,201,120,.45), transparent 72%)}
@@ -771,6 +780,7 @@ body.allege .poussiere{display:none}
         <div class="eyebrow">Zone 1</div>
         <h2 style="color:var(--ambre);text-shadow:0 0 10px rgba(255,201,120,.6),0 0 30px rgba(255,201,120,.3)">Nouveaux arrivages</h2>
       </div>
+      <img class="moto-decor" src="./images/decor/moto-arrivages.png" alt="">
       <div class="rangee-produits" id="rangee-arrivages"></div>
     </section>
 
