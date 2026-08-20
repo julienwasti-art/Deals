@@ -569,6 +569,20 @@ body.allege .poussiere{display:none}
   filter:blur(3px);
 }
 .vitrine-photo img{width:100%;height:100%;object-fit:contain;padding:10px;position:relative;z-index:1}
+.support-etagere{
+  position:relative;height:10px;margin-top:8px;border-radius:2px;
+  background:linear-gradient(180deg,#3A4552,#1A222C 60%,#0E141C);
+  box-shadow:0 3px 8px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset,
+             0 0 10px 1px rgba(95,212,255,.28);
+}
+.support-etagere::before,.support-etagere::after{
+  content:"";position:absolute;top:100%;width:4px;height:9px;
+  background:linear-gradient(180deg,#232D38,#12181F);
+}
+.support-etagere::before{left:14%}
+.support-etagere::after{right:14%}
+.zone-arrivages .support-etagere{box-shadow:0 3px 8px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset, 0 0 10px 1px rgba(255,201,120,.32)}
+.zone-moteurs .support-etagere{box-shadow:0 3px 8px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset, 0 0 10px 1px rgba(95,212,255,.32)}
 .carte-produit .nom{
   font-weight:800;text-transform:uppercase;font-size:13px;margin-top:9px;color:#fff;
   font-variation-settings:'wdth' 84;
@@ -875,6 +889,7 @@ function rendreCartes(liste, conteneurId){
     carte.innerHTML = `
       <button type="button" class="zone-clic">
         <div class="vitrine-photo"><img src="${p.photo}" alt="${p.nom}" loading="lazy"></div>
+        <div class="support-etagere"></div>
         <div class="nom">${p.nom}</div>
         <div class="prix mono">${p.prix} €</div>
       </button>
