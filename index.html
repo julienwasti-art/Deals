@@ -484,15 +484,14 @@ body.allege .poussiere{display:none}
   clip-path:polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
   pointer-events:none;
 }
+/* Photos déjà photoréalistes (scène + podium intégrés) : pas besoin du
+   halo néon ni du socle lumineux qui les faisaient ressembler à un jouet */
+.scene-reelle .podium-halo,.scene-reelle .podium-spot,.scene-reelle .podium-plateforme{display:none}
 .photo-scooter{
   position:relative;z-index:2;
-  max-width:88%;max-height:78%;object-fit:contain;
-  -webkit-mask-image:radial-gradient(ellipse 66% 80% at 50% 52%, #000 62%, transparent 100%);
-  mask-image:radial-gradient(ellipse 66% 80% at 50% 52%, #000 62%, transparent 100%);
-  filter:
-    drop-shadow(0 16px 12px rgba(0,0,0,.5))
-    drop-shadow(0 0 18px rgba(95,212,255,.25));
-  -webkit-box-reflect:below 3px linear-gradient(transparent, transparent 55%, rgba(191,227,251,.14));
+  max-width:92%;max-height:90%;object-fit:contain;
+  border-radius:10px;
+  filter:drop-shadow(0 14px 18px rgba(0,0,0,.55));
 }
 .photo-scooter.fond-blanc{
   transform:scale(1.34);
@@ -928,7 +927,7 @@ function initDefileScooters(){
     const carte = document.createElement("div");
     carte.className = "carte-scooter";
     carte.innerHTML = `
-      <div class="podium-scooter">
+      <div class="podium-scooter${s.fondBlanc ? "" : " scene-reelle"}">
         <div class="podium-halo"></div>
         <div class="podium-spot"></div>
         <img class="photo-scooter${s.fondBlanc ? " fond-blanc" : ""}" src="${s.photo}" alt="${s.nom}" loading="lazy">
