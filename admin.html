@@ -991,12 +991,12 @@ $("#btn-telecharger").addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "pieces-a-jour.js";
+  a.download = "pieces-data.js";
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  afficherToast("Fichier téléchargé — envoyez-le pour publier.");
+  afficherToast("Fichier téléchargé — remplacez pieces-data.js à la racine du site pour publier (catalogue et showroom l'utilisent tous les deux).");
 });
 
 $("#btn-copier").addEventListener("click", async () => {

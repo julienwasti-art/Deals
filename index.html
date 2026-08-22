@@ -595,6 +595,16 @@ body.allege .poussiere{display:none}
 .carte-produit .prix{
   font-family:'Space Mono',monospace;font-weight:700;color:var(--ambre);font-size:15px;margin-top:3px;
 }
+.infos-rapides{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tag-etat,.tag-dispo{
+  font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;padding:2px 7px;border-radius:999px;
+  background:rgba(255,255,255,.06);color:var(--acier);border:1px solid rgba(255,255,255,.1);
+}
+.tag-dispo{background:rgba(95,212,255,.14);color:var(--neon);border-color:rgba(95,212,255,.35)}
+.tag-dispo--indispo{background:rgba(230,57,70,.16);color:#FF8A93;border-color:rgba(230,57,70,.4)}
+.carte-produit--indisponible{opacity:.68}
+.carte-produit--indisponible .vitrine-photo{filter:saturate(.5)}
 .zone-clic{
   display:block;width:100%;text-align:left;background:none;border:none;padding:0;
   cursor:pointer;font:inherit;color:inherit;
@@ -620,13 +630,29 @@ body.allege .poussiere{display:none}
   opacity:.5;z-index:1;pointer-events:none;
   filter:drop-shadow(0 20px 26px rgba(0,0,0,.55)) saturate(.75);
 }
-.zone-arrivages .rangee-produits,.zone-moteurs .rangee-produits{left:auto;right:4%;transform:none}
 @media (max-width:1000px){.moto-decor{display:none}}
 .zone.zone-active .carte-produit{filter:brightness(1)}
 .zone.zone-highlight .couche-etageres{filter:brightness(1.25) saturate(1.1)}
-.zone-arrivages .vitrine-photo::after{background:radial-gradient(ellipse, rgba(255,201,120,.45), transparent 72%)}
-.zone-arrivages .carte-produit:hover,.zone-arrivages .carte-produit:focus-visible{border-color:var(--ambre);box-shadow:0 18px 40px rgba(255,201,120,.3) !important}
-.zone-arrivages .carte-produit::before,.zone-arrivages .carte-produit::after{border-color:rgba(255,201,120,.5)}
+
+/* ── accent par catégorie (showroom dynamique) ── */
+.zone-carrosserie .vitrine-photo::after,.zone-accessoires .vitrine-photo::after{background:radial-gradient(ellipse, rgba(255,201,120,.45), transparent 72%)}
+.zone-carrosserie .carte-produit:hover,.zone-carrosserie .carte-produit:focus-visible,
+.zone-accessoires .carte-produit:hover,.zone-accessoires .carte-produit:focus-visible{border-color:var(--ambre);box-shadow:0 18px 40px rgba(255,201,120,.3) !important}
+.zone-carrosserie .carte-produit::before,.zone-carrosserie .carte-produit::after,
+.zone-accessoires .carte-produit::before,.zone-accessoires .carte-produit::after{border-color:rgba(255,201,120,.5)}
+.zone-carrosserie .bulle-achat,.zone-accessoires .bulle-achat{background:rgba(255,201,120,.14);border-color:rgba(255,201,120,.4);color:var(--ambre)}
+.zone-carrosserie .bulle-achat:hover,.zone-accessoires .bulle-achat:hover{background:rgba(255,201,120,.28);border-color:var(--ambre)}
+
+.zone-electricite .vitrine-photo::after{background:radial-gradient(ellipse, rgba(230,57,70,.4), transparent 72%)}
+.zone-electricite .carte-produit:hover,.zone-electricite .carte-produit:focus-visible{border-color:var(--rouge);box-shadow:0 18px 40px rgba(230,57,70,.28) !important}
+.zone-electricite .carte-produit::before,.zone-electricite .carte-produit::after{border-color:rgba(230,57,70,.5)}
+.zone-electricite .bulle-achat{background:rgba(230,57,70,.14);border-color:rgba(230,57,70,.4);color:#FF8A93}
+.zone-electricite .bulle-achat:hover{background:rgba(230,57,70,.26);border-color:var(--rouge)}
+
+/* ── étagères adaptées : plus larges pour la carrosserie, vitrines pour les scooters ── */
+.zone-carrosserie .rangee-produits{grid-template-columns:repeat(2,min(280px,44vw))}
+.zone-scooters .rangee-produits{grid-template-columns:repeat(2,min(280px,44vw))}
+.zone-scooters .vitrine-photo{aspect-ratio:4/3}
 
 /* ── fiche produit overlay ── */
 #fiche-overlay{
@@ -771,45 +797,7 @@ body.allege .poussiere{display:none}
       </div>
     </section>
 
-    <!-- ZONE 1 : NOUVEAUX ARRIVAGES -->
-    <section class="zone zone-arrivages" data-nom="Nouveaux arrivages">
-      <div class="couche couche-mur" data-vitesse=".12" style="background:radial-gradient(700px 400px at 50% 15%, rgba(255,201,120,.10), transparent 60%), linear-gradient(180deg,#0D141D 0%,#080D14 55%,#05080D 100%)"></div>
-      <div class="pegboard"></div>
-      <div class="couche-etageres" style="box-shadow:0 -20px 50px rgba(0,0,0,.5) inset, 0 -1px 18px 2px rgba(255,201,120,.35)"></div>
-      <div class="sol"><div class="sol-lumiere" style="background:radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255,201,120,.18), transparent 75%)"></div></div>
-      <div class="led-plafond" style="background:linear-gradient(90deg,transparent,rgba(255,201,120,.9),transparent);box-shadow:0 0 24px 4px rgba(255,201,120,.5)"></div>
-      <div class="cone-lumiere" style="left:32%;background:linear-gradient(180deg, rgba(255,201,120,.18), transparent 85%)"></div>
-      <div class="cone-lumiere" style="left:64%;background:linear-gradient(180deg, rgba(255,201,120,.18), transparent 85%)"></div>
-      <div class="vignette"></div>
-      <div class="zone-titre">
-        <div class="eyebrow">Zone 1</div>
-        <h2 style="color:var(--ambre);text-shadow:0 0 10px rgba(255,201,120,.6),0 0 30px rgba(255,201,120,.3)">Nouveaux arrivages</h2>
-      </div>
-      <img class="moto-decor" src="./images/decor/moto-arrivages.png" alt="">
-      <div class="rangee-produits" id="rangee-arrivages"></div>
-    </section>
-
-    <!-- ZONE 2 : MOTEURS -->
-    <section class="zone zone-moteurs" data-nom="Moteurs">
-      <div class="couche couche-mur" data-vitesse=".16"></div>
-      <div class="pegboard"></div>
-      <div class="couche-etageres">
-        <div class="pile-pneus" style="left:5%"></div>
-        <div class="pile-pneus" style="right:5%"></div>
-      </div>
-      <div class="sol"><div class="sol-lumiere"></div></div>
-      <div class="led-plafond"></div>
-      <div class="cone-lumiere" style="left:22%"></div>
-      <div class="cone-lumiere" style="left:50%;transform:translateX(-50%)"></div>
-      <div class="cone-lumiere" style="right:22%;left:auto"></div>
-      <div class="vignette"></div>
-      <div class="zone-titre">
-        <div class="eyebrow">Zone 2</div>
-        <h2>Moteurs</h2>
-      </div>
-      <img class="moto-decor" src="./images/decor/scooter-moteurs.jpeg" alt="">
-      <div class="rangee-produits" id="rangee-moteurs"></div>
-    </section>
+    <!-- ZONES 1+ : générées dynamiquement depuis PIECES (pieces-data.js), une par catégorie réelle -->
 
   </div>
 </div>
@@ -845,42 +833,44 @@ body.allege .poussiere{display:none}
   </div>
 </div>
 
+<script src="./pieces-data.js"></script>
 <script>
 const CONFIG = {
   facebook: "https://www.facebook.com/profile.php?id=61593158489018"
 };
 
-/* Catalogue complet repris tel quel de catalogue.html (l'ancien site),
-   hors "Scooter complet" (vitrine séparée) et hors pièces vendues ou
-   sans photo. */
-const PRODUITS_ARRIVAGES = [
-  { nom:"Boîte à clapet", prix:10, etat:"Occasion", modele:"MBK Booster", compatible:"Booster 2004+",
-    photo:"https://i.postimg.cc/L4T0jLW1/4396FF43-0F8C-4CA1-8896-AF7291C0C926.png",
-    description:"Booster 2004+" },
-  { nom:"Selle Nitro", prix:35, etat:"Occasion", modele:"Yamaha Nitro", compatible:"Nitro / Aerox",
-    photo:"https://i.postimg.cc/d3pH9CMY/att-s-XUTVussl-Lh-Oqw9u-2la-WCs-Phe-V53gz-CP0UNPOT8Cw.jpg",
-    description:"Nitro / Aerox" },
-  { nom:"Selle Booster", prix:40, etat:"Occasion", modele:"MBK Booster", compatible:"Booster 2004+",
-    photo:"https://i.postimg.cc/zBnKQRR3/att-k-Mz0xz6cgghd-OIVayjx-Dodbx-TB5MHMVyl-Ase-Ks8YOE.jpg",
-    description:"Booster 2004+" },
-  { nom:"Compteur", prix:80, etat:"Occasion", modele:"Yamaha Nitro", compatible:"Yamaha Nitro",
-    photo:"https://i.postimg.cc/8PY3hZqb/1D38D209-F2A1-4338-9F69-F4529A89F8BA.jpg",
-    description:"Yamaha Nitro" },
-  { nom:"Câble frein", prix:10, etat:"Neuf", modele:"MBK Booster", compatible:"Booster",
-    photo:"https://i.postimg.cc/L8n4ZzHf/IMG-1205.jpg",
-    description:"Booster" },
-  { nom:"Faisceau électrique complet", prix:50, etat:"Occasion", modele:"MBK Booster", compatible:"Booster",
-    photo:"https://i.postimg.cc/1zCPGWz0/att-KOb6b2tp-D6Fn-Y6mq2JRx-Iw3Ettc-UJWFKj-MDQhhdlaao.jpg",
-    description:"Booster" }
+/* ═══ Showroom par catégorie — généré depuis PIECES (pieces-data.js) ═══
+   Une zone par catégorie réelle du catalogue admin, hors "Scooter complet"
+   qui a sa vitrine dédiée à part (zone Entrée, non modifiée). Une zone
+   sans aucune pièce ne s'affiche simplement pas. */
+const GROUPES_CATEGORIES = [
+  { cle:"scooters",        titre:"Scooters & Motos",  eyebrow:"Zone 1", accent:"neon",
+    correspond: c => c === "scooter complet" },
+  { cle:"moteur",           titre:"Moteur",            eyebrow:"Zone 2", accent:"neon",
+    correspond: c => c === "moteur" || c === "variation" },
+  { cle:"electricite",      titre:"Électricité",       eyebrow:"Zone 3", accent:"rouge",
+    correspond: c => c === "cablage" || c === "électrique" || c === "electrique" },
+  { cle:"carrosserie",      titre:"Carrosserie",       eyebrow:"Zone 4", accent:"ambre",
+    correspond: c => c === "carrosserie" },
+  { cle:"freinage-roues",   titre:"Freinage & Roues",  eyebrow:"Zone 5", accent:"neon",
+    correspond: c => c === "freinage" || c === "roues & pneus" },
+  { cle:"accessoires",      titre:"Accessoires",       eyebrow:"Zone 6", accent:"ambre",
+    correspond: c => c === "accessoires" }
 ];
-const PRODUITS_MOTEURS = [
-  { nom:"Transmission", prix:40, etat:"Occasion", modele:"MBK Booster", compatible:"MBK Booster",
-    photo:"https://i.postimg.cc/kMxTqK9d/9E778C9E-DD18-4E16-BE45-40E63313A230.png",
-    description:"MBK Booster" },
-  { nom:"Carbu 21 Motorforce", prix:50, etat:"Occasion", modele:"Universel", compatible:"Universel",
-    photo:"https://i.postimg.cc/J4b4SVxz/att-RRLf8Jzdq1dl-RM-Cl4oz30x-Y3Gusrj-W3Bp-Zlgb-Mp93A.jpg",
-    description:"Universel" }
-];
+const COULEURS_ACCENT = { neon:"95,212,255", ambre:"255,201,120", rouge:"230,57,70" };
+function normaliserCategorie(c){
+  return (c || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+}
+function normaliserPiece(p){
+  const photo = (p.photos && p.photos[0]) || p.photo || "";
+  const dispoBrute = p.disponibilite || (p.vendu ? "Vendu" : "En stock");
+  const disponibilite = dispoBrute === "En stock" ? "Disponible" : dispoBrute;
+  return {
+    nom:p.nom, prix:p.prix, etat:p.etat, modele:p.modele || "",
+    compatible:p.compatible || "", description:p.description || p.compatible || "",
+    photo, disponibilite
+  };
+}
 
 /* Scooters complets déjà vendus — vitrine de la zone Entrée */
 const SCOOTERS_VENDUS = [
@@ -895,31 +885,77 @@ const reduitMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 const appareilLeger = (navigator.hardwareConcurrency || 4) < 4;
 if (appareilLeger) document.body.classList.add("allege");
 
-/* ═══ Rendu des cartes produit ═══ */
+/* ═══ Rendu des cartes produit ═══
+   Affiche nom/prix/état/disponibilité directement sur la carte. La bulle
+   "Acheter" n'apparaît que si la pièce est réellement disponible. */
 function rendreCartes(liste, conteneurId){
   const zone = $("#" + conteneurId);
+  if (!zone) return;
   liste.forEach((p, i) => {
+    const disponible = p.disponibilite === "Disponible";
     const carte = document.createElement("div");
-    carte.className = "carte-produit";
+    carte.className = "carte-produit" + (disponible ? "" : " carte-produit--indisponible");
     carte.style.setProperty("--decalage", i);
     carte.innerHTML = `
       <button type="button" class="zone-clic">
         <div class="vitrine-photo"><img src="${p.photo}" alt="${p.nom}" loading="lazy"></div>
         <div class="support-etagere"></div>
         <div class="nom">${p.nom}</div>
+        <div class="infos-rapides">
+          <span class="tag-etat">${p.etat}</span>
+          <span class="tag-dispo${disponible ? "" : " tag-dispo--indispo"}">${p.disponibilite}</span>
+        </div>
         <div class="prix mono">${p.prix} €</div>
       </button>
-      <a class="bulle-achat" href="${CONFIG.facebook}" target="_blank" rel="noopener" aria-label="Acheter ${p.nom} sur Facebook">
+      ${disponible ? `<a class="bulle-achat" href="${CONFIG.facebook}" target="_blank" rel="noopener" aria-label="Acheter ${p.nom} sur Facebook">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.5H7.6V13h2.7v8h3.2z"/></svg>
         Acheter
-      </a>
+      </a>` : ""}
     `;
     carte.querySelector(".zone-clic").addEventListener("click", () => ouvrirFiche(p, carte.closest(".zone")));
     zone.appendChild(carte);
   });
 }
-rendreCartes(PRODUITS_ARRIVAGES, "rangee-arrivages");
-rendreCartes(PRODUITS_MOTEURS, "rangee-moteurs");
+
+/* ═══ Construction du showroom : une zone par catégorie réelle du catalogue ═══ */
+function construireZonesDynamiques(){
+  const piste = $("#piste");
+  if (!piste || typeof PIECES === "undefined") return;
+  const disponibles = PIECES.filter(p => p.actif !== false);
+
+  GROUPES_CATEGORIES.forEach((groupe, index) => {
+    const items = disponibles.filter(p => groupe.correspond(normaliserCategorie(p.categorie)));
+    if (!items.length) return;
+
+    const rgb = COULEURS_ACCENT[groupe.accent] || COULEURS_ACCENT.neon;
+    const idRangee = "rangee-" + groupe.cle;
+    const section = document.createElement("section");
+    section.className = "zone zone-generique zone-" + groupe.cle;
+    section.dataset.nom = groupe.titre;
+    section.innerHTML = `
+      <div class="couche couche-mur" data-vitesse="${(0.09 + index * 0.02).toFixed(2)}"></div>
+      <div class="pegboard"></div>
+      <div class="couche-etageres" style="box-shadow:0 -20px 50px rgba(0,0,0,.5) inset, 0 -1px 18px 2px rgba(${rgb},.35)">
+        <div class="pile-pneus" style="left:5%"></div>
+        <div class="pile-pneus" style="right:5%"></div>
+      </div>
+      <div class="sol"><div class="sol-lumiere" style="background:radial-gradient(ellipse 60% 100% at 50% 0%, rgba(${rgb},.18), transparent 75%)"></div></div>
+      <div class="led-plafond" style="background:linear-gradient(90deg,transparent,rgba(${rgb},.9),transparent);box-shadow:0 0 24px 4px rgba(${rgb},.5)"></div>
+      <div class="cone-lumiere" style="left:22%;background:linear-gradient(180deg, rgba(${rgb},.18), transparent 85%)"></div>
+      <div class="cone-lumiere" style="left:50%;transform:translateX(-50%);background:linear-gradient(180deg, rgba(${rgb},.18), transparent 85%)"></div>
+      <div class="cone-lumiere" style="right:22%;left:auto;background:linear-gradient(180deg, rgba(${rgb},.18), transparent 85%)"></div>
+      <div class="vignette"></div>
+      <div class="zone-titre">
+        <div class="eyebrow">${groupe.eyebrow}</div>
+        <h2 style="color:var(--${groupe.accent});text-shadow:0 0 10px rgba(${rgb},.6),0 0 30px rgba(${rgb},.3)">${groupe.titre}</h2>
+      </div>
+      <div class="rangee-produits" id="${idRangee}"></div>
+    `;
+    piste.appendChild(section);
+    rendreCartes(items.map(normaliserPiece), idRangee);
+  });
+}
+construireZonesDynamiques();
 
 /* ═══ Défilé des scooters vendus ═══
    Bande horizontale où tous les scooters sont visibles en même temps,
