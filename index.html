@@ -567,7 +567,13 @@ body.allege .poussiere{display:none}
   background:radial-gradient(ellipse, rgba(95,212,255,.45), transparent 72%);
   filter:blur(3px);
 }
-.vitrine-photo img{width:100%;height:100%;object-fit:contain;padding:10px;position:relative;z-index:1}
+.vitrine-photo img{
+  width:100%;height:100%;object-fit:contain;padding:10px;position:relative;z-index:1;
+  transform:scale(1.32);
+  -webkit-mask-image:radial-gradient(ellipse 52% 60% at 50% 50%, #000 46%, transparent 86%);
+  mask-image:radial-gradient(ellipse 52% 60% at 50% 50%, #000 46%, transparent 86%);
+  filter:contrast(1.05) saturate(1.06);
+}
 .support-etagere{
   position:relative;height:10px;margin-top:8px;border-radius:2px;
   background:linear-gradient(180deg,#3A4552,#1A222C 60%,#0E141C);
